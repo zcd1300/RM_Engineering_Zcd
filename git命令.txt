@@ -1,0 +1,36 @@
+git init 		本地仓库初始化
+git status		查看状态
+git add		添加（暂存区）
+git commit	提交
+git log		日志
+
+git checkout 	切换分支、Tag、撤消
+git checkout -b	创建并切换分支
+
+git branch	查看/创建分支
+git branch -d	删除分支
+git branch -D	强制删除分支
+
+git merge		分支合并
+git rebase		分支合并
+
+git tag		版本标识
+
+git push		提交到远程主机
+git push (-u) origin master  
+
+git pull		主机到本地
+git pull --rebase origin master		主机到本地并合并
+
+git remote	主机列表
+git remote -v
+
+git diff		查看分支修改（commit之前）
+git alias		自定义命令
+
+git stash		代码暂存（即使没有add）
+git stash list	暂存记录
+git stash apply	返回之前的记录
+git stash drop	删除记录
+git stash pop	返回并删除记录
+git stash clear	删除全部记录
