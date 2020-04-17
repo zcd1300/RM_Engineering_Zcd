@@ -38,13 +38,13 @@
 #define ADDR_Flash_Sector_22 0x081C0000 //128k
 #define ADDR_Flash_Sector_23 0x081E0000 //128k
 
-
+//-------------------------------------------//
 uint32_t Flash_ReadWord(uint32_t Read_Addr);
 uint8_t Flash_GetFlashSectorNUM(uint32_t addr);
 void Flash_Write(uint32_t WriteAddr,uint32_t Num_of_Write,uint32_t *Write_pBuffer);
 void Flash_Read(uint32_t ReadAddr,uint32_t Num_of_Read,uint32_t *Read_pBuffer);
 void Flash_Erase_Sector(uint8_t Erase_Sector_Num);
-
+//-------------------------------------------//
 extern uint32_t Sector_ERROR;
 extern uint8_t Erase_ERROR;
 extern uint8_t Write_ERROR;
