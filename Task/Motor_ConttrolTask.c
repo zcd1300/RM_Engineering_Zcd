@@ -17,12 +17,11 @@
 #include "Friction.h"
 #include "User_Math.h"
 
-
 uint16_t GMSpeeedTest=200;
 uint8_t YAW_Initial_Angle_FLAG=0;
 uint8_t PITCH_Initial_Angle_FLAG=0;
 
-volatile float YAW_Initial_Angle=-101;
+volatile float YAW_Initial_Angle=-101;	//= 
 volatile float YAW_Target_Angle=-101;
 volatile float PITCH_Initial_Angle=185;
 volatile float PITCH_Target_Angle=185;
@@ -32,6 +31,7 @@ int16_t Pitch_InitAngle_ABS=185;			//工程云台Pitch时水平绝对角度184-196之间
 
 Ramp_Init_e Yaw_Ramp_Init={-101,20,50,0,0,0};		//这里忘了那边角度是递增，具体使用等看看那边角度再写。
 Ramp_Init_e Pitch_Ramp_Init={-101,20,50,0,0,0};
+
 
 PID_Regulator_t GM6020_Yaw_PositionPID = GIMBAL_MOTOR_YAW_POSITION_PID_DEFAULT;
 PID_Regulator_t GM6020_Yaw_SpeedPID =GIMBAL_MOTOR_YAW_SPEED_PID_DEFAULT;
