@@ -9,7 +9,6 @@
 #include "Fuzzy_Controller.h"
 
 
-
 /**
  * @brief  Linear quantization operation function; 
 		   Range {-6~6}
@@ -84,11 +83,27 @@ static void Membership_Calc(float *ms,float qv,int *Index)
 
 /**
  * @brief  Decode fuzzy function
- * @param	float *ms(membership),float qv(qValue),int *Index
+ * @param	Fuzzy *vPID,float fdb,float *deltaK
  * @retval  void
  * @Time 2020 4 19
 */
-static void FuzzyDecode()
+static void FuzzyDecode(Fuzzy *vPID,float fdb,float *deltaK)
+{
+	float qValue[2]={0,0};
+	int Index_E[2] ={0,0};
+	float ms_E[2]={0,0};
+	int Index_Ec[2]={0,0};
+	float ms_Ec[2] ={0,0};
+	float qValueK[3];
+	
+	Linearization(vPID,fdb,qValue);
+	
+	Membership_Calc(ms_E,qValue[0],Index_E);
+	Membership_Calc(ms_Ec,qValue[1],Index_Ec);
+	
+	
+
+}
 
 
 
