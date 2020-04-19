@@ -82,4 +82,13 @@ static void Membership_Calc(float *ms,float qv,int *Index)
 	}
 }
 
+/**
+ * @brief  Decode fuzzy function
+ * @param	float *ms(membership),float qv(qValue),int *Index
+ * @retval  void
+ * @Time 2020 4 19
+*/
+static void FuzzyDecode()
+
+
 
