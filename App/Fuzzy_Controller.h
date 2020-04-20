@@ -74,7 +74,7 @@ typedef struct
 	
 	float max_Kp;			//Kp范围
 	float min_Kp;
-	float Q_Kp;				//Kp隶属度
+	float Q_Kp;				//Kp影响系数
 	
 	float max_Ki;
 	float min_Ki;

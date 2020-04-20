@@ -88,19 +88,16 @@ static void Membership_Calc(float *ms,float qv,int *Index)
  * @author zcd
  * @Time 2020 4 20
 */
-static float Linear_Amplification(float max,float min,float qValue)
+static float Linear_Amplification(float Kx, float max,float min,float Q_Kx,float qValue)
 {
-	float temp=0;
-	
-	
-	if(temp>=max)
+	qValue = qValue*Q_Kx;
+	Kx=Kx+qValue;
+	if(Kx>=max)
 	{	return max; }
-	else if(temp<min)
+	else if(Kx<min)
 	{	return min; }
-	else if(temp<0)
-	{	return 0;	}
 	else
-	{	return temp;}
+	{	return Kx;}
 }
 
 /**
@@ -132,9 +129,9 @@ static void FuzzyDecode(Fuzzy *vPID,float fdb,float *deltaK)
 	qValueK[2]=ms_E[0]*(ms_Ec[0]*rule_Kd[Index_E[0]][Index_Ec[0]]+ms_Ec[1]*rule_Kd[Index_E[0]][Index_Ec[1]])
 			  +ms_E[1]*(ms_Ec[0]*rule_Kd[Index_E[1]][Index_Ec[0]]+ms_Ec[1]*rule_Kd[Index_E[1]][Index_Ec[1]]);
 	
-	deltaK[0] = Linear_Amplification(vPID->max_Kp,vPID->min_Kp,qValueK[0]);
-	deltaK[1] = Linear_Amplification(vPID->max_Ki,vPID->min_Ki,qValueK[1]);
-	deltaK[2] = Linear_Amplification(vPID->max_Kd,vPID->min_Kd,qValueK[2]);
+	deltaK[0] = Linear_Amplification(vPID->Kp ,vPID->max_Kp,vPID->min_Kp,vPID->Q_Kp,qValueK[0]);
+	deltaK[1] = Linear_Amplification(vPID->Ki ,vPID->max_Ki,vPID->min_Ki,vPID->Q_Ki,qValueK[1]);
+	deltaK[2] = Linear_Amplification(vPID->Kd ,vPID->max_Kd,vPID->min_Kd,vPID->Q_Kd,qValueK[2]);
 	
 }
 
