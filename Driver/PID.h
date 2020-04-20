@@ -263,6 +263,7 @@ typedef struct PID_Regulator_t
 	
 	void (*Calc)(struct PID_Regulator_t *pid);//函数指针 //指向pid计算函数
 	void (*Reset)(struct PID_Regulator_t *pid);
+	int deadband;
 }PID_Regulator_t;
 
 void PID_Reset(PID_Regulator_t *pid);

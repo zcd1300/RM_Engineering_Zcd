@@ -7,7 +7,7 @@
 */
 
 #include "Fuzzy_Controller.h"
-
+#include "PID.h"
 
 /**
  * @brief  Linear quantization operation function; 
@@ -133,6 +133,25 @@ static void FuzzyDecode(Fuzzy *vPID,float fdb,float *deltaK)
 	deltaK[1] = Linear_Amplification(vPID->Ki ,vPID->max_Ki,vPID->min_Ki,vPID->Q_Ki,qValueK[1]);
 	deltaK[2] = Linear_Amplification(vPID->Kd ,vPID->max_Kd,vPID->min_Kd,vPID->Q_Kd,qValueK[2]);
 	
+}
+
+/**
+ * @brief  Connect PID and Fuzzy controlor
+ * @param	Fuzzy *vPID,PID_Regulator_t *tPID
+ * @retval  void
+ * @Time 2020 4 20
+*/
+static void Connect_PID_FUZZY(Fuzzy * vPID,PID_Regulator_t *tPID)
+{
+	
+	
+	tPID->ref = vPID->SetPoint;
+	
+	tPID->kp = vPID->Kp;
+	tPID->ki = vPID->Ki;
+	tPID->kd = vPID->Kd;
+
+
 }
 
 
