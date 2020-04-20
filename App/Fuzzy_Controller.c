@@ -82,10 +82,32 @@ static void Membership_Calc(float *ms,float qv,int *Index)
 }
 
 /**
+ * @brief  Linear_Amplification, enlarge the result of decode fuzzy to the specificed range
+ * @param	float max,float min,float qValue
+ * @retval  float
+ * @author zcd
+ * @Time 2020 4 20
+*/
+static float Linear_Amplification(float max,float min,float qValue)
+{
+	float temp=0;
+	
+	
+	if(temp>=max)
+	{	return max; }
+	else if(temp<min)
+	{	return min; }
+	else if(temp<0)
+	{	return 0;	}
+	else
+	{	return temp;}
+}
+
+/**
  * @brief  Decode fuzzy function
  * @param	Fuzzy *vPID,float fdb,float *deltaK
  * @retval  void
- * @Time 2020 4 19
+ * @Time 2020 4 20
 */
 static void FuzzyDecode(Fuzzy *vPID,float fdb,float *deltaK)
 {
@@ -101,8 +123,19 @@ static void FuzzyDecode(Fuzzy *vPID,float fdb,float *deltaK)
 	Membership_Calc(ms_E,qValue[0],Index_E);
 	Membership_Calc(ms_Ec,qValue[1],Index_Ec);
 	
+	qValueK[0]=ms_E[0]*(ms_Ec[0]*rule_Kp[Index_E[0]][Index_Ec[0]]+ms_Ec[1]*rule_Kp[Index_E[0]][Index_Ec[1]])
+			  +ms_E[1]*(ms_Ec[0]*rule_Kp[Index_E[1]][Index_Ec[0]]+ms_Ec[1]*rule_Kp[Index_E[1]][Index_Ec[1]]);
 	
-
+	qValueK[1]=ms_E[0]*(ms_Ec[0]*rule_Ki[Index_E[0]][Index_Ec[0]]+ms_Ec[1]*rule_Ki[Index_E[0]][Index_Ec[1]])
+			  +ms_E[1]*(ms_Ec[0]*rule_Ki[Index_E[1]][Index_Ec[0]]+ms_Ec[1]*rule_Ki[Index_E[1]][Index_Ec[1]]);
+	
+	qValueK[2]=ms_E[0]*(ms_Ec[0]*rule_Kd[Index_E[0]][Index_Ec[0]]+ms_Ec[1]*rule_Kd[Index_E[0]][Index_Ec[1]])
+			  +ms_E[1]*(ms_Ec[0]*rule_Kd[Index_E[1]][Index_Ec[0]]+ms_Ec[1]*rule_Kd[Index_E[1]][Index_Ec[1]]);
+	
+	deltaK[0] = Linear_Amplification(vPID->max_Kp,vPID->min_Kp,qValueK[0]);
+	deltaK[1] = Linear_Amplification(vPID->max_Ki,vPID->min_Ki,qValueK[1]);
+	deltaK[2] = Linear_Amplification(vPID->max_Kd,vPID->min_Kd,qValueK[2]);
+	
 }
 
 
