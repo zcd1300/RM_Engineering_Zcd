@@ -57,21 +57,23 @@ typedef struct
 {
 	float SetPoint;			//设定值
 	
-	float Kp;				
-	float Ki;
-	float Kd;
+	float K_x[3];
+//	float Kp;				
+//	float Ki;
+//	float Kd;
 	
 	float deadband;			//死区
 	
 	float LastERROR;		//上次偏差
+/*
 	float PreERROR;			//上上次偏差
 	
 	float output;			//输出
-//	float result;			//物理量输出
-
+	float result;			//物理量输出
+*/
 	float max_out;			//输出上限
 	float min_out;			//输出下限
-	
+
 	float max_Kp;			//Kp范围
 	float min_Kp;
 	float Q_Kp;				//Kp影响系数

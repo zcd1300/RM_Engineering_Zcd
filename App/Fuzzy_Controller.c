@@ -129,9 +129,9 @@ static void FuzzyDecode(Fuzzy *vPID,float fdb,float *deltaK)
 	qValueK[2]=ms_E[0]*(ms_Ec[0]*rule_Kd[Index_E[0]][Index_Ec[0]]+ms_Ec[1]*rule_Kd[Index_E[0]][Index_Ec[1]])
 			  +ms_E[1]*(ms_Ec[0]*rule_Kd[Index_E[1]][Index_Ec[0]]+ms_Ec[1]*rule_Kd[Index_E[1]][Index_Ec[1]]);
 	
-	deltaK[0] = Linear_Amplification(vPID->Kp ,vPID->max_Kp,vPID->min_Kp,vPID->Q_Kp,qValueK[0]);
-	deltaK[1] = Linear_Amplification(vPID->Ki ,vPID->max_Ki,vPID->min_Ki,vPID->Q_Ki,qValueK[1]);
-	deltaK[2] = Linear_Amplification(vPID->Kd ,vPID->max_Kd,vPID->min_Kd,vPID->Q_Kd,qValueK[2]);
+	deltaK[0] = Linear_Amplification(vPID->K_x[0] ,vPID->max_Kp,vPID->min_Kp,vPID->Q_Kp,qValueK[0]);
+	deltaK[1] = Linear_Amplification(vPID->K_x[1] ,vPID->max_Ki,vPID->min_Ki,vPID->Q_Ki,qValueK[1]);
+	deltaK[2] = Linear_Amplification(vPID->K_x[2] ,vPID->max_Kd,vPID->min_Kd,vPID->Q_Kd,qValueK[2]);
 	
 }
 
@@ -144,13 +144,15 @@ static void FuzzyDecode(Fuzzy *vPID,float fdb,float *deltaK)
 static void Connect_PID_FUZZY(Fuzzy * vPID,PID_Regulator_t *tPID)
 {
 	
+	vPID->max_out=tPID->outputMax;
+	vPID->min_out=-tPID->outputMax;
 	
 	tPID->ref = vPID->SetPoint;
+	FuzzyDecode(vPID,tPID->fdb,vPID->K_x);	
+	tPID->kp = vPID->K_x[0];
+	tPID->ki = vPID->K_x[1];
+	tPID->kd = vPID->K_x[2];
 	
-	tPID->kp = vPID->Kp;
-	tPID->ki = vPID->Ki;
-	tPID->kd = vPID->Kd;
-
 
 }
 

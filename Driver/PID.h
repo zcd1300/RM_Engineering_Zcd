@@ -22,11 +22,11 @@
 #define CHASSIS_SPEED_KP_DEFAULTS  20.0
 #define CHASSIS_SPEED_KI_DEFAULTS  0
 #define CHASSIS_SPEED_KD_DEFAULTS  0
-
+/*
 #define CHASSIS_ROTATE_KP_DEFAULTS  4
 #define CHASSIS_ROTATE_KI_DEFAULTS  0
 #define CHASSIS_ROTATE_KD_DEFAULTS  0
-
+*/
 
 #define SHOOT_SPEED_KP_DEFAULTS  5//1.5
 #define SHOOT_SPEED_KI_DEFAULTS  0
@@ -37,7 +37,7 @@
 #define PID_TURNTABLE_CHECK_SPEED (3)
 
 #define CHASSIS_SPEED_ATTENUATION   (1.0f)
-
+/*
 #define CHASSIS_MOTOR_ROTATE_PID_DEFAULT \
 {\
 	0,\
@@ -60,7 +60,7 @@
 	&PID_Calc,\
 	&PID_Reset,\
 }
-
+*/
 //gimbal position pid control
 //20  19
 #define GIMBAL_MOTOR_PITCH_POSITION_PID_DEFAULT \
@@ -263,6 +263,7 @@ typedef struct PID_Regulator_t
 	
 	void (*Calc)(struct PID_Regulator_t *pid);//函数指针 //指向pid计算函数
 	void (*Reset)(struct PID_Regulator_t *pid);
+	
 	int deadband;
 }PID_Regulator_t;
 
