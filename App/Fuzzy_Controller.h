@@ -67,7 +67,7 @@ typedef struct
 	float PreERROR;			//上上次偏差
 	
 	float output;			//输出
-	float result;			//物理量输出
+//	float result;			//物理量输出
 
 	float max_out;			//输出上限
 	float min_out;			//输出下限
@@ -86,6 +86,7 @@ typedef struct
 	
 }Fuzzy;
 
+static void FuzzyDecode(Fuzzy *vPID,float fdb,float *deltaK);
 
 
 #endif

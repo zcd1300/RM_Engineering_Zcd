@@ -48,6 +48,7 @@ void GM_prepare(void)
 {
 //	YAW_Initial_Angle=YAW_GM6020Encoder.ecd_angle;	
 //	PITCH_Initial_Angle=PITCH_GM6020Encoder.ecd_angle;
+	
 	PID_Task(&GM6020_Yaw_PositionPID,YAW_Target_Angle,YAW_GM6020Encoder.ecd_angle);
 	PID_Task(&GM6020_Yaw_SpeedPID,GM6020_Yaw_PositionPID.output*400,YAW_GM6020Encoder.filter_rate);
 	

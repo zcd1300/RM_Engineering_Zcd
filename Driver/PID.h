@@ -238,7 +238,7 @@
 
 typedef struct PID_Regulator_t
 {
-	float ref;//信函（待调节量给定值）
+	float ref;//（待调节量给定值）
 	float fdb;//feedback（待调节量反馈值）
 	
 	float err[3];//偏差
