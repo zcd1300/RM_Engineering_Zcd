@@ -107,15 +107,18 @@ void VisionData_Transmit_USB(void)
 */
 void SendTo_Chassis(void)
 {
-	CAN2_Tx_Buff_Ext[0]= YAW_GM6020Encoder.ecd_value >>24;
-	CAN2_Tx_Buff_Ext[1]= YAW_GM6020Encoder.ecd_value >>16;
-	CAN2_Tx_Buff_Ext[2]= YAW_GM6020Encoder.ecd_value >>8;
-	CAN2_Tx_Buff_Ext[3]= YAW_GM6020Encoder.ecd_value ;
-	CAN2_Tx_Buff_Ext[4]= (int16_t)(YAW_GM6020Encoder.ecd_angle*100) >>8;
-	CAN2_Tx_Buff_Ext[5]= (int16_t)(YAW_GM6020Encoder.ecd_angle*100) ;
-	CAN2_Tx_Buff_Ext[6]= (int16_t)(YAW_GM6020Encoder.ecd_angle*100) >>8;
-	CAN2_Tx_Buff_Ext[7]= (int16_t)(YAW_GM6020Encoder.ecd_angle*100) ;
 	
+	int8_t Send_temp = YAW_GM6020Encoder.ecd_angle-YAW_Initial_Angle;
+	CAN2_Tx_Buff_Ext[0]= Send_temp;
+//	CAN2_Tx_Buff_Ext[0]= YAW_GM6020Encoder.ecd_value >>24;
+//	CAN2_Tx_Buff_Ext[1]= YAW_GM6020Encoder.ecd_value >>16;
+//	CAN2_Tx_Buff_Ext[2]= YAW_GM6020Encoder.ecd_value >>8;
+//	CAN2_Tx_Buff_Ext[3]= YAW_GM6020Encoder.ecd_value ;
+//	CAN2_Tx_Buff_Ext[4]= (int16_t)(YAW_GM6020Encoder.ecd_angle*100) >>8;
+//	CAN2_Tx_Buff_Ext[5]= (int16_t)(YAW_GM6020Encoder.ecd_angle*100) ;
+//	CAN2_Tx_Buff_Ext[6]= (int16_t)(YAW_GM6020Encoder.ecd_angle*100) >>8;
+//	CAN2_Tx_Buff_Ext[7]= (int16_t)(YAW_GM6020Encoder.ecd_angle*100) ;
+//	
 	CAN2_Send(CAN2_Tx_Buff_Ext,0x300);
 }
 

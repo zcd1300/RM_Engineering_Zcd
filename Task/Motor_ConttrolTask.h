@@ -17,6 +17,7 @@
 
 void Motor_ControlThraedCreate (osPriority taskPriority);
 
+extern volatile float YAW_Initial_Angle;
 
 #endif
 
