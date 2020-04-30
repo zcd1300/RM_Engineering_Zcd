@@ -218,7 +218,3 @@ void Motor_ControlThraedCreate (osPriority taskPriority)
 
 }
 
-
-
-
-

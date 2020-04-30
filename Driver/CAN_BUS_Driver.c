@@ -170,7 +170,3 @@ void CAN_DriverThreadCreate (osPriority taskPriority)
 
 }
 
-
-
-
-
