@@ -141,19 +141,19 @@ static void FuzzyDecode(Fuzzy *vPID,float fdb,float *deltaK)
  * @retval  void
  * @Time 2020 4 20
 */
-static void Connect_PID_FUZZY(Fuzzy * vPID,PID_Regulator_t *tPID)
+void Connect_PID_FUZZY(Fuzzy * vPID,PID_Regulator_t *tPID,float Ref_Temp)
 {
 	
 	vPID->max_out=tPID->outputMax;
 	vPID->min_out=-tPID->outputMax;
+	vPID->deadband=tPID->deadband;
+	vPID->SetPoint=Ref_Temp;
 	
-	tPID->ref = vPID->SetPoint;
 	FuzzyDecode(vPID,tPID->fdb,vPID->K_x);	
 	tPID->kp = vPID->K_x[0];
 	tPID->ki = vPID->K_x[1];
 	tPID->kd = vPID->K_x[2];
 	
-
 }
 
 

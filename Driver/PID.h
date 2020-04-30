@@ -132,6 +132,7 @@
 	0,\
 	&PID_Calc,\
 	&PID_Reset,\
+	10\
 }
 
 //gimbal yaw speed pid control

@@ -11,7 +11,7 @@
 
 
 #include "stdint.h"
-
+#include "PID.h"
 #define NB -6
 #define NM -4
 #define NS -2
@@ -20,7 +20,7 @@
 #define PM 4
 #define PB 6
 
-int8_t rule_Kp[7][7]=\
+static int8_t rule_Kp[7][7]=\
 {\
 	{PB,PB,PM,PM,PS,ZO,ZO},\
 	{PB,PB,PM,PS,PS,ZO,NS},\
@@ -31,7 +31,7 @@ int8_t rule_Kp[7][7]=\
 	{ZO,ZO,NM,NM,NM,NB,NB}\
 };
 
-int8_t rule_Ki[7][7]=\
+static int8_t rule_Ki[7][7]=\
 {\
 	{NB,NB,NM,NM,NS,ZO,ZO},\
 	{NB,NB,NM,NS,NS,ZO,ZO},\
@@ -42,7 +42,7 @@ int8_t rule_Ki[7][7]=\
 	{ZO,ZO,PS,PM,PM,PB,PB}\
 };
 
-int8_t rule_Kd[7][7]=\
+static int8_t rule_Kd[7][7]=\
 {\
 	{PS,NS,NB,NB,NB,NM,PS},\
 	{PS,NS,NB,NM,NM,NS,ZO},\
@@ -57,11 +57,7 @@ typedef struct
 {
 	float SetPoint;			//设定值
 	
-	float K_x[3];
-//	float Kp;				
-//	float Ki;
-//	float Kd;
-	
+	float K_x[3];	
 	float deadband;			//死区
 	
 	float LastERROR;		//上次偏差
@@ -89,7 +85,7 @@ typedef struct
 }Fuzzy;
 
 static void FuzzyDecode(Fuzzy *vPID,float fdb,float *deltaK);
-
+void Connect_PID_FUZZY(Fuzzy * vPID,PID_Regulator_t *tPID,float Ref_Temp);
 
 #endif
 

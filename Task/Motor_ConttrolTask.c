@@ -9,13 +9,15 @@
 #include "CAN_BUS_Driver.h"
 #include "cmsis_os.h"
 #include "PID.h"
-#include "usart.h"
-#include "XDU_USB_HID_Z.h"
 #include "Msg_Frame.h"
 #include "Remote_Driver.h"
 #include "Motor_ConttrolTask.h" 
-#include "Friction.h"
 #include "User_Math.h"
+#include "Fuzzy_Controller.h"
+//#include "Friction.h"
+//#include "usart.h"
+//#include "XDU_USB_HID_Z.h"
+
 
 uint16_t GMSpeeedTest=200;
 uint8_t YAW_Initial_Angle_FLAG=0;
@@ -38,6 +40,9 @@ PID_Regulator_t GM6020_Yaw_SpeedPID =GIMBAL_MOTOR_YAW_SPEED_PID_DEFAULT;
 PID_Regulator_t GM6020_Pitch_PositionPID=GIMBAL_MOTOR_PITCH_POSITION_PID_DEFAULT;
 PID_Regulator_t GM6020_Pitch_SpeedPID=GIMBAL_MOTOR_PITCH_SPEED_PID_DEFAULT;
 
+Fuzzy Fuzzy_YAW_Speed={0,{0,0,0},0,0,0,0,20,0,1,10,0,1,5,0,1};
+Fuzzy Fuzzy_YAW_Position={0,{0,0,0},0,0,0,0,20,0,1,10,0,1,5,0,1};
+
 /**
  * @brief gimbal prepare task 
  * @retval
@@ -46,12 +51,13 @@ PID_Regulator_t GM6020_Pitch_SpeedPID=GIMBAL_MOTOR_PITCH_SPEED_PID_DEFAULT;
 */
 void GM_prepare(void)
 {
-//	YAW_Initial_Angle=YAW_GM6020Encoder.ecd_angle;	
-//	PITCH_Initial_Angle=PITCH_GM6020Encoder.ecd_angle;
-	
+	Connect_PID_FUZZY(&Fuzzy_YAW_Position,&GM6020_Yaw_PositionPID,YAW_Target_Angle);
 	PID_Task(&GM6020_Yaw_PositionPID,YAW_Target_Angle,YAW_GM6020Encoder.ecd_angle);
+	Connect_PID_FUZZY(&Fuzzy_YAW_Speed,&GM6020_Yaw_SpeedPID,GM6020_Yaw_PositionPID.output);
 	PID_Task(&GM6020_Yaw_SpeedPID,GM6020_Yaw_PositionPID.output*400,YAW_GM6020Encoder.filter_rate);
+	//直接在输入乘以倍数可能导致难以精确控制，后期去掉，增大Kp的调节范围
 	
+
 	PID_Task(&GM6020_Pitch_PositionPID,PITCH_Target_Angle,PITCH_GM6020Encoder.ecd_angle);
 	PID_Task(&GM6020_Pitch_SpeedPID,GM6020_Pitch_PositionPID.output*4,PITCH_GM6020Encoder.filter_rate);
 
@@ -146,7 +152,7 @@ void RC_GM_Control(void)
  * @ZCD
  * @Time 2020 4 14 
 */
-void Mouse_GM_Control(void)//尚未完善
+void Mouse_GM_Control(void)//尚未测试完善
 {
 	if(YAW_Initial_Angle_FLAG<5)
 	{
