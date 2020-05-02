@@ -2,7 +2,7 @@
  * @brief  State control
  * @param	State control
  * @author zcd
- * @Time 2020 1 5 
+ * @Time 2020 5 1 
 */
 #ifndef __StatusManagement_H
 #define __StatusManagement_H
@@ -14,7 +14,7 @@ typedef enum
 {
     PREPARE_STATE,          //ÉÏµçºó³õÊ¼×´Ì¬
     NORMAL_RC_STATE,        //Ò£¿ØÆ÷¿ØÖÆ×´Ì¬
-    KEYBOARD_RC_STATE,      //¼üÅÌ¿ØÖÆ×´Ì¬
+    KEYBOARD_RC_STATE,      //¼üÅÌ¿ØÖÆ×´Ì¬	
     STOP_STATE,             //Í£Ö¹×´Ì¬
 }WorkState_e;	
 
