@@ -29,7 +29,7 @@ void SetWorkState(WorkState_e state)
 {	WorkState = state;	}
 WorkState_e GetWorkState(void)
 {	return WorkState;	}
-
+//--------------------------------------------
 void State_Update(void)
 {
 	LastWorkState = WorkState;
@@ -71,7 +71,7 @@ void State_Update(void)
 	}
 	WorkstateInit();
 }
-
+//------------------------------------------
 void InputMode_Select(void)
 {
 	if(RC_CtrlData.rc.switch_right == SWITCH_UP)
@@ -85,6 +85,40 @@ void InputMode_Select(void)
 	if(RC_CtrlData.rc.switch_right == SWITCH_DOWN)
 	{
 		InputMode = STOP;
+	}
+}
+
+//------------------------------------------
+InputMode_e GetInputMode(void)
+{
+	return InputMode;
+}
+//------------------------------------------
+void OperateMode_Select(void)
+{
+	switch(WorkState)
+	{
+		case PREPARE_STATE:
+		{
+			OperateMode = Stop_Mode;
+		}break;
+		case NORMAL_RC_STATE:
+		{
+			OperateMode = NormalRC_Mode;
+			
+		}break;
+		case KEYBOARD_RC_STATE:
+		{
+		
+		}break;
+		case STOP_STATE:
+		{
+			OperateMode = Stop_Mode;
+		}break;
+		default:
+		{
+			OperateMode = Stop_Mode;
+		}break;
 	}
 }
 
