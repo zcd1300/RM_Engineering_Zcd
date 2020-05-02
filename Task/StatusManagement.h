@@ -9,7 +9,7 @@
 
 #include "stdint.h"
 #include "Remote_Driver.h"
-
+#include "cmsis_os.h"
 
 #define PREPARE_TIME_TICK_MS 2000
 
@@ -49,7 +49,7 @@ extern OperateMode_e OperateMode;
 
 void StatusMachine_Init(void);
 InputMode_e GetInputMode(void);
-
+void StateMachineThreadCreate(osPriority taskPriority);
 #endif
 
 

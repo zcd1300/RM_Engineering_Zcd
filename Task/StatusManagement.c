@@ -250,6 +250,25 @@ void StatusMachine_Update(void)
 }
 
 
+void StateMachine(void const* argument)
+{
+	portTickType xLastWakeTime;
+	xLastWakeTime = xTaskGetTickCount();
+	
+	for(;;)
+	{	
+		StatusMachine_Update();
+		osDelay(10/portTICK_RATE_MS);
+	}	
+}
+osThreadId StateMachineHandle;
+
+void StateMachineThreadCreate(osPriority taskPriority)
+{
+	osThreadDef(StateMachineThread,StateMachine,taskPriority,0,256);
+	StateMachineHandle = osThreadCreate(osThread(StateMachineThread),NULL);
+}
+
 /**
   @CompletionTime 2020 5 2
 */
