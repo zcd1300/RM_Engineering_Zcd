@@ -131,6 +131,7 @@ typedef enum				//InputMode
 //extern uint8_t Remote_RxBuff[18];				//遥控器数据接收缓存
 
 extern Remote_Control RC_CtrlData;
+extern InputMode_e InputMode;
 /***********************************************************************/
 
 #endif

@@ -6,13 +6,13 @@
 */
 #include "StatusManagement.h"
 #include "Motor_ConttrolTask.h"
-
+#include "Remote_Driver.h"
 
 
 WorkState_e WorkState;
 WorkState_e LastWorkState =STOP_STATE;
 
-//OperateMode_e OperateMode;
+OperateMode_e OperateMode;
 //extern uint32_t time_tick_1ms;
 
 
@@ -72,6 +72,20 @@ void State_Update(void)
 	WorkstateInit();
 }
 
-
+void InputMode_Select(void)
+{
+	if(RC_CtrlData.rc.switch_right == SWITCH_UP)
+	{
+		InputMode = REMOTE_INPUT;
+	}
+	if(RC_CtrlData.rc.switch_right == SWITCH_CENTRAL)
+	{
+		InputMode = KEYBOARD_INPUT;
+	}
+	if(RC_CtrlData.rc.switch_right == SWITCH_DOWN)
+	{
+		InputMode = STOP;
+	}
+}
 
 
