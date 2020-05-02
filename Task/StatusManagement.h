@@ -28,7 +28,7 @@ typedef enum
 
 typedef enum  //具体的自动控制状态还没确定，先放着吧
 {
-	Auto_NoMovement_Init,
+	Auto_NoMovement,
 	Auto_Get_Bullet,
 	Auto_Get_Bullets,
 	Auto_Get_Bullets2,

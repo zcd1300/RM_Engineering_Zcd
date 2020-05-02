@@ -11,8 +11,8 @@
 
 WorkState_e WorkState;
 WorkState_e LastWorkState =STOP_STATE;
-
 OperateMode_e OperateMode;
+AutoMovement_e AutoMovement;
 //extern uint32_t time_tick_1ms;
 
 
@@ -105,7 +105,7 @@ void OperateMode_Select(void)
 		case NORMAL_RC_STATE:
 		{
 			OperateMode = NormalRC_Mode;
-			
+			AutoMovement = Auto_NoMovement;
 		}break;
 		case KEYBOARD_RC_STATE:
 		{
