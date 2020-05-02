@@ -80,14 +80,30 @@ void OperateMode_Select(void)
 				OperateMode = NormalRC_Mode;
 				AutoMovement = Auto_NoMovement;	
 				//这可能做成电机停止运动，或者当遥控器Channel值大于600时手动触发自动控制
+				
+				if(RC_CtrlData.rc.Channel_1 >600)
+				{
+					AutoMovement = Auto_Get_Bullet;
+				}
+				//其他通道同理，通过if判断即可
 			
-			
-			}
-			
+			}	
 		}break;
 		case KEYBOARD_RC_STATE:
 		{
-		
+			OperateMode = KeyMouse_Mode;
+			if(AutoMovement != Auto_NoMovement)//其实这些东西可以考虑加在mode下
+			{
+			//不变
+			}
+			/********以上是保持动作不变**********/
+			
+			//检测按键按下进行状态切换以及参数设定
+			else if(Remote_CheckJumpKey(KEY_Z))
+			{
+				AutoMovement = Auto_Give_Bullet;
+			}
+			//其他按键同理
 		}break;
 		case STOP_STATE:
 		{
@@ -101,49 +117,10 @@ void OperateMode_Select(void)
 }
 ~~~
 
-
-
 ~~~ c
+void StatusMachine_Init(void)
+static void WorkstateInit(void)
 void State_Update(void)
-{
-	LastWorkState = WorkState;
-	//遥控器错误停止
-	if()
-	{
-		WorkState = STOP_STATE;
-		return;
-	}
-	//云台、陀螺仪校准
-	else if()
-	{
-	
-		return;
-	}
-	switch(WorkState)
-	{
-		case PREPARE_STATE:
-		{
-		
-		
-		}break;
-		case NORMAL_RC_STATE:
-		{
-		
-		
-		
-		}break;
-		case KEYBOARD_RC_STATE:
-		{
-		
-		
-		}break;
-		case STOP_STATE:
-		{
-		
-		}break;
-		
-	}
-	WorkstateInit();
-}
+void OperateMode_Select(void)
 ~~~
 

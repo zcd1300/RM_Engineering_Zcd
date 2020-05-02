@@ -8,6 +8,10 @@
 #define __StatusManagement_H
 
 #include "stdint.h"
+#include "Remote_Driver.h"
+
+
+#define PREPARE_TIME_TICK_MS 2000
 
 /*-------------------This part from 2019 engineering robot--------------*/
 typedef enum
@@ -43,6 +47,8 @@ typedef enum  //具体的自动控制状态还没确定，先放着吧
 extern WorkState_e 	WorkState;
 extern OperateMode_e OperateMode;
 
+void StatusMachine_Init(void);
+InputMode_e GetInputMode(void);
 
 #endif
 

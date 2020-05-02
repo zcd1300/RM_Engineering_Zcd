@@ -66,7 +66,7 @@
 
 /************************ Function declaration *************************/
 void RemoteDataProcess(uint8_t *pData);
-
+uint8_t Remote_CheckJumpKey(uint16_t Key_Temp);
 
 /************************ structural morphology*************************/
 typedef struct				//Remote channel and swtch data

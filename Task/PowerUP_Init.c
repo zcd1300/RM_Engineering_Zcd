@@ -7,6 +7,7 @@
 */
 
 #include "PowerUP_Init.h"
+#include "StatusManagement.h"
 
 GimbalOffset_SAVE Gimbal_Init={0,0,0};
 
