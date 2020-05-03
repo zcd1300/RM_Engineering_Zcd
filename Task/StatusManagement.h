@@ -13,7 +13,7 @@
 
 #define PREPARE_TIME_TICK_MS 2000
 
-/*-------------------This part from 2019 engineering robot--------------*/
+/*-----------------------------------------------------------------------*/
 typedef enum
 {
     PREPARE_STATE,          //上电后初始状态
@@ -25,10 +25,20 @@ typedef enum
 typedef enum
 {
     Stop_Mode,
-    NormalRC_Mode,//RC--Remote Control
+    NormalRC_Mode,		//RC--Remote Control
     KeyMouse_Mode,
-    Auto_Mode,//自动模式指的是自动进行某一运动,如取弹等
+    Auto_Mode,			//自动模式指的是自动进行某一运动,如取弹等
 }OperateMode_e;
+
+
+typedef enum
+{
+	Attack_Insurance,   //保险
+	Attack_Normal,		//普通单发
+	Attack_HalfAuto,	//半自动连发
+	Attack_Dragon, 		//打符模式，不知道工程能不能打先留着吧
+	Attack_ROTATE,		
+} Attack_Mode_e;
 
 typedef enum  //具体的自动控制状态还没确定，先放着吧
 {

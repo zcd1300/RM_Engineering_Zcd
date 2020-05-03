@@ -125,11 +125,7 @@ void InputMode_Select(void)
 	}
 }
 
-//------------------------------------------
-InputMode_e GetInputMode(void)
-{
-	return InputMode;
-}
+
 //------------------------------------------
 //这个函数还没完成，只能等开学完成了
 void OperateMode_Select(void)
@@ -203,7 +199,7 @@ void OperateMode_Select(void)
 }
 
 //-----------------------------------------
-void DriverModeSelect(void)
+void DriverMode_Select(void)
 {
   switch (OperateMode)
   {
@@ -229,6 +225,20 @@ void DriverModeSelect(void)
 	  }break;
   }
 }
+//------------------------------------------
+void AttackMode_Select(void)
+{
+	static uint32_t time_stamp_1 = 0;
+	if(InputMode == KEYBOARD_INPUT)
+	{
+		if(Remote_CheckJumpKey(KEY_Q))
+		{
+			
+		}
+	
+	}
+
+}
 
 //------------------------------------------
 void StatusMachine_Init(void)//目前还没被调用，在上电时应该被调用。在切会prepare时也应该调用
@@ -246,7 +256,7 @@ void StatusMachine_Update(void)
 	InputMode_Select();		//遥控器 右侧按键 控制的，输入状态切换（键鼠/遥控/停止）
 	State_Update();			//整车状态切换，受InputMode影响
 	OperateMode_Select();	//操作模式切换，受WorkState和遥控 左侧按键 影响
-	DriverModeSelect();		//运行模式切换，受OperateMode和遥控数据影响
+	DriverMode_Select();		//运行模式切换，受OperateMode和遥控数据影响
 }
 
 
