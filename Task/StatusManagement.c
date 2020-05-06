@@ -14,6 +14,8 @@ WorkState_e LastWorkState =STOP_STATE;
 OperateMode_e OperateMode;
 AutoMovement_e AutoMovement;
 Attack_Mode_e Attack_Mode;
+Gimbal_MoveMode_t Gimbal_Mode;
+Chassis_MoveMode_t Move_Mode;
 
 extern uint32_t time_tick_1ms;
 
@@ -250,8 +252,102 @@ void AttackMode_Select(void)
 	}
 
 }
+//------------------------------------------云台状态
+void GimbalMode_Select(void)
+{
+	switch(WorkState)
+	{
+		case PREPARE_STATE:
+		{
+		
+		}break;
+		case NORMAL_RC_STATE:
+		{
+		
+		
+		}break;
+		case KEYBOARD_RC_STATE:
+		{
+		
+		}break;
+		case STOP_STATE:
+		{
+		
+		}break;
+		default:
+		{
+			Gimbal_Mode = Gimbal_Stop;
+		}
+	
+	}
 
-//------------------------------------------
+}
+
+//------------------------------------------底盘状态
+void ChassisMode_Select(void)
+{
+	switch(WorkState)
+	{
+		case PREPARE_STATE:
+		{
+		
+		
+		}break;
+		case NORMAL_RC_STATE:
+		{
+		
+		}break;
+		case KEYBOARD_RC_STATE:
+		{
+		
+		}break;
+		case STOP_STATE:
+		{
+		
+		}break;
+		default:
+		{
+			
+		}
+		
+	}
+
+
+}
+//------------------------------------------摩擦轮状态
+void FrictionMode_Select(void)
+{
+	switch(WorkState)
+	{
+		case PREPARE_STATE:
+		{
+		
+		}break;
+		case NORMAL_RC_STATE:
+		{
+		
+		}break;
+		case KEYBOARD_RC_STATE:
+		{
+		
+		}break;
+		case STOP_STATE:
+		{
+		
+		}break;
+		default:
+		{
+			
+		}
+	}
+
+
+}
+//------------------------------------------拨盘状态先空着吧，这个的状态切换函数可能需要单独写
+
+
+
+//------------------------------------------状态机初始化
 void StatusMachine_Init(void)//目前还没被调用，在上电时应该被调用。在切会prepare时也应该调用
 {
 	WorkState = PREPARE_STATE;

@@ -40,6 +40,41 @@ typedef enum
 	Attack_ROTATE,		
 } Attack_Mode_e;
 
+typedef enum
+{
+	Gimbal_Prepare = 0,
+	Gimbal_Stop = 1,
+	Gimbal_RC_Mode = 2,
+	Gimbal_Mouse_Mode = 3,
+	Gimbal_Auto = 4,//大符
+	Gimbal_Follow = 5,//自动跟踪
+	Gimbal_Standby = 6,
+	Gimbal_Debug = 7,
+	
+}Gimbal_MoveMode_t;
+
+typedef  enum
+{
+	StopMoveLock  = 0x00,
+	MoveRC_Normal = 0x01,              //遥控模式
+	MoveKEY_Normal = 0x02,
+	MoveAuto = 0x03,                 
+	MoveDebug = 0x04,
+}Chassis_MoveMode_t;
+
+typedef enum
+{
+	FRICTION_WHEEL_OFF = 0,
+	FRICTION_WHEEL_START_TURNNING = 1,
+	FRICTION_WHEEL_ON = 2,
+}FrictionWheelState_e;
+
+typedef enum
+{
+	NOSHOOTING = 0,
+	SHOOTING = 1,
+}Shoot_State_e;
+
 typedef enum  //具体的自动控制状态还没确定，先放着吧
 {
 	Auto_NoMovement,
