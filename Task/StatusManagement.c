@@ -13,6 +13,8 @@ WorkState_e WorkState;
 WorkState_e LastWorkState =STOP_STATE;
 OperateMode_e OperateMode;
 AutoMovement_e AutoMovement;
+Attack_Mode_e Attack_Mode;
+
 extern uint32_t time_tick_1ms;
 
 //函数未完成
@@ -225,16 +227,25 @@ void DriverMode_Select(void)
 	  }break;
   }
 }
-//------------------------------------------
+//------------------------------------------攻击模式
 void AttackMode_Select(void)
 {
 	static uint32_t time_stamp_1 = 0;
 	if(InputMode == KEYBOARD_INPUT)
 	{
-		if(Remote_CheckJumpKey(KEY_Q))
+		if(Remote_CheckJumpKey(KEY_Q)==1 && )
 		{
+			if(Attack_Mode = )
+			{	
+				Attack_Mode = Attack_Normal;
+			}
+			else
+			{
 			
+			}
+			//在不同的攻击模式下才进行模式切换
 		}
+		//这里添加其他按键对应的攻击模式切换
 	
 	}
 
@@ -245,6 +256,7 @@ void StatusMachine_Init(void)//目前还没被调用，在上电时应该被调用。在切会prepare
 {
 	WorkState = PREPARE_STATE;
 	AutoMovement = Auto_NoMovement;
+	Attack_Mode = Attack_Normal;
 	//还有其他初始化，等完善后再添加
 	
 
