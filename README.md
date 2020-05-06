@@ -5,7 +5,7 @@ RoboMaster engineering
 
 # 目录
 
-* ##   [可能覆盖的部分](#index1)
+* ##   [可能覆盖的部分](#可能会被cube重新生成覆盖的部分)
 
 * ## [尚未进行调试部分](index2)
 
@@ -21,7 +21,7 @@ RoboMaster engineering
 
 
 
-## 可能会被cube重新生成覆盖的部分{#index1} ##
+## 可能会被cube重新生成覆盖的部分 ##
 
 
 
