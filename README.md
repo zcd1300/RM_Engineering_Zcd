@@ -7,9 +7,9 @@ RoboMaster engineering
 
 * ##   [可能覆盖的部分](#可能会被cube重新生成覆盖的部分)
 
-* ## [尚未进行调试部分](index2)
+* ## [尚未进行调试部分](#还未调试的部分)
 
-* ## [代码留空部分](index3)
+* ## [代码留空部分](#因为条件限制暂时不能留空的代码部分)
 
   
 
@@ -35,7 +35,7 @@ RoboMaster engineering
 
 ​	
 
-## 还未调试的部分{#index2} ##
+## 还未调试的部分 ##
 
 * 模糊pid效果以及参数：motocontrol.c\h 	Fuzzy.c\h
 
@@ -43,7 +43,7 @@ RoboMaster engineering
 
 * 状态机自动控制部分状态：![image-20200502213634020](C:\Users\lenovo\AppData\Roaming\Typora\typora-user-images\image-20200502213634020.png)
 
-## 因为条件限制暂时不能留空的代码部分{#index3} ##
+## 因为条件限制暂时不能留空的代码部分 ##
 
 ~~~ c
 void OperateMode_Select(void)
