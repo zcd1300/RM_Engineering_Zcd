@@ -1,7 +1,8 @@
 #ifndef __SUPERVISETASK_H
 #define __SUPERVISETASK_H
 
-#include "config.h"
+#include "stdint.h"
+#include "cmsis_os.h"
 
 #define LOST_ERROR_RC               		0u
 #define LOST_ERROR_MOTOR_CHASSIS1		    1u				
@@ -68,17 +69,12 @@ extern uint16_t UART2FrameCounter;
 extern uint16_t IMUFrameRate ;
 extern uint16_t IMUFrameCounter ;
 
-extern uint16_t LiftChainFrameRate[4];
-extern uint16_t LiftChainFrameCounter[4];
-
-extern uint16_t GuideMotorFrameRate[2];
-extern uint16_t GuideMotorFrameCounter[2];
-
-extern uint16_t MoveArmMotorFrameRate ;
-extern uint16_t MoveArmMotorFrameCounter;
-
-extern uint16_t FlipArmMotorFrameRate;
-extern uint16_t FlipArmMotorFrameCounter;
+//这个的检测先注释，看底盘部分的要不要做到一起
+//extern uint16_t MoveArmMotorFrameRate ;
+//extern uint16_t MoveArmMotorFrameCounter;
+//
+//extern uint16_t FlipArmMotorFrameRate;
+//extern uint16_t FlipArmMotorFrameCounter;
 
 void SuperviseTask(void);
 
@@ -92,46 +88,43 @@ void Monitor_ThreadCreate(osPriority taskPriority);
 void Supervise_Task(void const * argument);
 void FrameGet(void);
 void ErrorFlagSet(void);
-void BeepForError(void);
 
+//void BeepForError(void);
 
-
-
-
+//蜂鸣器可能用不到，先注释掉了
+/*
 //蜂鸣器部分,作为检测之后的表现
 
 typedef enum{
 
-  Do1L = 0, ///*261.63Hz*/    3822us
-  Re2L,     ///*293.66Hz*/    3405us
-  Mi3L,     ///*329.63Hz*/    3034us
-  Fa4L,     ///*349.23Hz*/    2863us
-  So5L,     ///*392.00Hz*/    2551us
-  La6L,     ///*440.00Hz*/    2272us
-  Si7L,     ///*493.88Hz*/    2052us
+  Do1L = 0, ///261.63Hz    3822us
+  Re2L,     ///293.66Hz    3405us
+  Mi3L,     ///329.63Hz    3034us
+  Fa4L,     ///349.23Hz    2863us
+  So5L,     ///392.00Hz    2551us
+  La6L,     ///440.00Hz    2272us
+  Si7L,     ///493.88Hz    2052us
 
-  Do1M,     ///*523.25Hz*/    1911us
-  Re2M,     ///*587.33Hz*/    1703us
-  Mi3M,     ///*659.26Hz*/    1517us
-  Fa4M,     ///*698.46Hz*/    1432us
-  So5M,     ///*784.00Hz*/    1276us
-  La6M,     ///*880.00Hz*/    1136us
-  Si7M,     ///*987.77Hz*/    1012us
+  Do1M,     ///523.25Hz    1911us
+  Re2M,     ///587.33Hz    1703us
+  Mi3M,     ///659.26Hz    1517us
+  Fa4M,     ///698.46Hz    1432us
+  So5M,     ///784.00Hz    1276us
+  La6M,     ///880.00Hz    1136us
+  Si7M,     ///987.77Hz    1012us
 
-  Do1H,     ///*1046.50Hz*/   956us
-  Re2H,     ///*1174.66Hz*/   851us
-  Mi3H,     ///*1318.51Hz*/   758us
-  Fa4H,     ///*1396.91Hz*/   716us
-  So5H,     ///*1567.98Hz*/   638us
-  La6H,     ///*1760.00Hz*/   568us
-  Si7H,     ///*1975.53Hz*/   506us
+  Do1H,     ///1046.50H/   956us
+  Re2H,     ///1174.66H/   851us
+  Mi3H,     ///1318.51H/   758us
+  Fa4H,     ///1396.91H/   716us
+  So5H,     ///1567.98H/   638us
+  La6H,     ///1760.00H/   568us
+  Si7H,     ///1975.53H/   506us
 
   Silent,
 }Sound_tone_e;
-
-
-
-
+*/
+/*
 #ifdef NEW_BELIEF
 #define BEEP_ON     (TIM12->CCR1 = 599)
 #define BEEP_OFF    (TIM12->CCR1 = 0)
@@ -146,10 +139,10 @@ typedef enum{
 #define BEEP_ARR    (TIM3->ARR)
 #define BEEP_CH     (TIM3->CCR1)
 #endif
-
-void Sing(Sound_tone_e tone);
-void Sing_Music(const Sound_tone_e *music, uint8_t length);
-void BeepTask(void);
+*/
+//void Sing(Sound_tone_e tone);
+//void Sing_Music(const Sound_tone_e *music, uint8_t length);
+//void BeepTask(void);
 
 #endif
 

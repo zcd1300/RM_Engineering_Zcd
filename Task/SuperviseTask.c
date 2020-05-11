@@ -2,7 +2,7 @@
 #include "SuperviseTask.h"
 #include "cmsis_os.h"
 #include "task.h"
-#include "Driver_Beep.h"
+
 uint32_t *GetLostCounter(uint32_t index);
 uint16_t GetLostCounter_max(uint32_t index);
 uint32_t lost_err = 0;     //每一位代表一个错误
