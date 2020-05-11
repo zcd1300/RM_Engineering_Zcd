@@ -7,7 +7,7 @@
 #include "StatusManagement.h"
 #include "Motor_ConttrolTask.h"
 #include "Remote_Driver.h"
-
+#include "SuperviseTask.h"
 
 WorkState_e WorkState;
 WorkState_e LastWorkState =STOP_STATE;
@@ -41,7 +41,7 @@ void State_Update(void)
 	
 	//以下是几种需要直接转换状态的情况
 	//遥控器错误停止
-	if()
+	if(Is_Lost_Error_Set(LOST_ERROR_RC)||InputMode == STOP)
 	{
 		WorkState = STOP_STATE;
 		return;
@@ -376,7 +376,7 @@ void StateMachine(void const* argument)
 	for(;;)
 	{	
 		StatusMachine_Update();
-		osDelay(10/portTICK_RATE_MS);
+		osDelayUntil(&xLastWakeTime,10/portTICK_RATE_MS);
 	}	
 }
 osThreadId StateMachineHandle;

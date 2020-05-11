@@ -243,7 +243,7 @@ void BeepForError(void)
 }
 */
 
-void Supervise_Task(void const * argument)
+void Supervise(void const * argument)
 {
 	portTickType xLastWakeTime;
 	xLastWakeTime = xTaskGetTickCount();
@@ -254,5 +254,5 @@ void Supervise_Task(void const * argument)
 		vTaskDelayUntil(&xLastWakeTime,500/portTICK_RATE_MS);
 	}
 }
-
+osThreadId SuperviseHandle;
 
