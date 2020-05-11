@@ -69,13 +69,6 @@ extern uint16_t UART2FrameCounter;
 extern uint16_t IMUFrameRate ;
 extern uint16_t IMUFrameCounter ;
 
-//这个的检测先注释，看底盘部分的要不要做到一起
-//extern uint16_t MoveArmMotorFrameRate ;
-//extern uint16_t MoveArmMotorFrameCounter;
-//
-//extern uint16_t FlipArmMotorFrameRate;
-//extern uint16_t FlipArmMotorFrameCounter;
-
 void SuperviseTask(void);
 
 void Set_Error_Flag(uint32_t index);
@@ -90,7 +83,6 @@ void FrameGet(void);
 void ErrorFlagSet(void);
 
 //void BeepForError(void);
-
 //蜂鸣器可能用不到，先注释掉了
 /*
 //蜂鸣器部分,作为检测之后的表现
