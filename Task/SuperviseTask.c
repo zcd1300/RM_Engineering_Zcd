@@ -170,7 +170,7 @@ void ErrorFlagSet(void)//设置错误位
 	if(CAN_Send_FrameRate < 400)
 	{
 		Set_Error_Flag(LOST_ERROR_CAN_TX);
-		error_count[13]++;
+		error_count[1]++;
 	}
 	else
 	{
@@ -180,7 +180,7 @@ void ErrorFlagSet(void)//设置错误位
 	if(CAN_Res_FrameRate < 400)
 	{
 		Set_Error_Flag(LOST_ERROR_CAN_RX);
-		error_count[14]++;
+		error_count[2]++;
 	}
 	else
 	{
@@ -190,7 +190,7 @@ void ErrorFlagSet(void)//设置错误位
 	if(IMUFrameRate < 200)
 	{
 		Set_Error_Flag(LOST_ERROR_IMU);
-		error_count[15]++;
+		error_count[3]++;
 	}
 	else
 	{
@@ -245,18 +245,14 @@ void BeepForError(void)
 
 void Supervise_Task(void const * argument)
 {
-
-  
 	portTickType xLastWakeTime;
 	xLastWakeTime = xTaskGetTickCount();
-
   /* Infinite loop */
-  for(;;)
-  {
-			Task_Monitor();	
-			vTaskDelayUntil(&xLastWakeTime,500/portTICK_RATE_MS);
-  }
-
+	for(;;)
+	{
+		Task_Monitor();	
+		vTaskDelayUntil(&xLastWakeTime,500/portTICK_RATE_MS);
+	}
 }
 
 
