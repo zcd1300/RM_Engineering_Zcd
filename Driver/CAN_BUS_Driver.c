@@ -10,6 +10,7 @@
 #include "CAN_BUS_Driver.h"
 #include "can.h"
 #include "Motor_ConttrolTask.h"
+#include "SuperviseTask.h"
 
 uint8_t CAN1_Tx_Buff_Std[8]={0};
 uint8_t CAN1_Tx_Buff_Ext[8]={0};
@@ -119,6 +120,7 @@ void CANReceiveMsgProcess(CAN_RxHeaderTypeDef *Rxmsg)
 	{
 		case CAN_BUS_YAWMOTO_FEEDBACK_MSG_ID:
 		{
+			YAWFrameCounter++;
 			//get_measure(&YAW_GM6020Measure,CAN1_RxData_Buffer);
 			EncoderProcess(&YAW_GM6020Encoder);
 			EncoderCorrection();
@@ -126,23 +128,26 @@ void CANReceiveMsgProcess(CAN_RxHeaderTypeDef *Rxmsg)
 		break;
 		case CAN_BUS_PITCHMOTO_FEEDBACK_MSG_ID:
 		{
+			PITCHFrameCounter++;			
 			EncoderProcess(&PITCH_GM6020Encoder);
-		
 		}
 		break;
 		
 		case CAN_BUS_LeftFriction_Feefback_ID:
 		{
+			FrictionFrameCounter_Left++;
 			get_measure(&Friction_Speed_Left_Measure,CAN1_RxData_Buffer);
 		}
 		break;
 		case CAN_BUS_RightFriction_Feedback_ID:
 		{
+			FrictionFrameCounter_Right++;
 			get_measure(&Friction_Speed_Right_Measure,CAN1_RxData_Buffer);
 		}
 		break;
 		case CAN_BUS_BulletPlate_Feedback_ID:
 		{
+			BulletPlateFrameCounter++;
 			get_measure(&BulletPlate_Measure,CAN1_RxData_Buffer);
 			EncoderProcess(&BulletPlate_CM2006Encoder);
 		}

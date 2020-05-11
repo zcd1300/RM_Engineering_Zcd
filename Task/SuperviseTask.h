@@ -5,21 +5,21 @@
 #include "cmsis_os.h"
 
 #define LOST_ERROR_RC               		0u
-#define LOST_ERROR_MOTOR_CHASSIS1		    1u				
-#define LOST_ERROR_MOTOR_CHASSIS2		    2u			
-#define LOST_ERROR_MOTOR_CHASSIS3		    3u			
-#define LOST_ERROR_MOTOR_CHASSIS4		    4u
-#define LOST_ERROR_MOTOR_LIFT1      		5u
-#define LOST_ERROR_MOTOR_LIFT2      		6u
-#define LOST_ERROR_MOTOR_LIFT3        	7u
-#define LOST_ERROR_MOTOR_LIFT4					8u
-#define LOST_ERROR_MOTOR_GUIDE1					9u
-#define LOST_ERROR_MOTOR_GUIDE2					10u
-#define LOST_ERROR_MOTOR_FLIP						11u
-#define LOFT_ERROR_MOTOR_MOVE						12u
-#define LOST_ERROR_CAN_TX           		13u
-#define LOST_ERROR_CAN_RX              	14u
-#define LOST_ERROR_IMU			15u						
+#define LOST_ERROR_MOTOR_YAW		    	1u				
+#define LOST_ERROR_MOTOR_PITCH			    2u			
+#define LOST_ERROR_MOTOR_Friction_Left	    3u			
+#define LOST_ERROR_MOTOR_Friction_Right		4u
+#define LOST_ERROR_MOTOR_BulltePlate     	5u
+#define LOST_ERROR_MiniPC_USBRx   			6u
+#define LOST_ERROR_MiniPC_USBTx     		7u
+#define LOST_ERROR_1				8u		//Áô¿Õ
+#define LOST_ERROR_2				9u      //Áô¿Õ
+#define LOST_ERROR_3				10u     //Áô¿Õ
+#define LOST_ERROR_4				11u     //Áô¿Õ
+#define LOFT_ERROR_5				12u		//Áô¿Õ
+#define LOST_ERROR_CAN_TX          			13u
+#define LOST_ERROR_CAN_RX            	  	14u
+#define LOST_ERROR_IMU						15u						
 
 typedef __packed struct  Lost_Counter_Max
 {
@@ -44,7 +44,7 @@ typedef struct
 	uint32_t deltaTime;
 }ThreadMonitor_t;
 
-#define LOST_ERROR_ALL (LOST_ERROR_RC|LOST_ERROR_IMU|LOST_ERROR_MOTOR1|LOST_ERROR_MOTOR2|LOST_ERROR_MOTOR3|LOST_ERROR_MOTOR4|LOST_ERROR_GIMBAL_YAW|LOST_ERROR_GIMBAL_YAW|LOST_ERROR_DEADLOCK|LOST_ERROR_NOCALI)
+//#define LOST_ERROR_ALL (LOST_ERROR_RC|LOST_ERROR_IMU|LOST_ERROR_MOTOR1|LOST_ERROR_MOTOR2|LOST_ERROR_MOTOR3|LOST_ERROR_MOTOR4|LOST_ERROR_GIMBAL_YAW|LOST_ERROR_GIMBAL_YAW|LOST_ERROR_DEADLOCK|LOST_ERROR_NOCALI)
 
 extern uint32_t lost_err;
 extern uint32_t lost_counter[40];
@@ -65,6 +65,25 @@ extern uint16_t UART2FrameCounter;
 extern uint16_t IMUFrameRate ;
 extern uint16_t IMUFrameCounter ;
 
+extern uint16_t YAWFrameRate;
+extern uint16_t YAWFrameCounter;
+ 
+extern uint16_t PITCHFrameRate;
+extern uint16_t PITCHFrameCounter;
+
+extern uint16_t MiniPCFrameRate_USBRx;
+extern uint16_t MiniPCFrameCounter_USBRx;
+
+extern uint16_t MiniPCFrameRate_USBTx;
+extern uint16_t MiniPCFrameCounter_USBTx;
+
+extern uint16_t FrictionFrameRate_Left;
+extern uint16_t FrictionFrameCounter_Left;
+extern uint16_t FrictionFrameRate_Right;
+extern uint16_t FrictionFrameCounter_Right;
+
+extern uint16_t BulletPlateFrameRate;
+extern uint16_t BulletPlateFrameCounter;
 void SuperviseTask(void);
 
 void Set_Error_Flag(uint32_t index);

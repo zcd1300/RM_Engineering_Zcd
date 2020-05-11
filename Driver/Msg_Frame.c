@@ -13,6 +13,7 @@
 #include "Msg_Frame.h"
 #include "cmsis_os.h" 
 #include "Motor_ConttrolTask.h"
+#include "SuperviseTask.h"
 
 float Temp_Yaw=0;
 float Temp_Pitch=0;
@@ -33,6 +34,7 @@ USB_Decoding USB_Vision_Decoding={0,0,0};
 */
 HAL_StatusTypeDef USB_FrameCheck(uint8_t* USB_RxBuff)
 {
+	MiniPCFrameCounter_USBRx++;
 	switch (USB_RxBuff[0])
 	{
 		case 0xAA:
@@ -96,7 +98,7 @@ void VisionData_Transmit_USB(void)
 	Tx_SendTemp_USB[6]=0xAB;
 	
 	usb_hid_Tx(Tx_SendTemp_USB);
-	
+	MiniPCFrameCounter_USBTx++;
 }
 
 /**

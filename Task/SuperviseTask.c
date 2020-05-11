@@ -20,6 +20,25 @@ uint16_t UART2FrameCounter = 0;
 uint16_t IMUFrameRate = 0;
 uint16_t IMUFrameCounter = 0;
 
+uint16_t YAWFrameRate = 0;
+uint16_t YAWFrameCounter = 0;
+uint16_t PITCHFrameRate = 0;
+uint16_t PITCHFrameCounter = 0;
+
+uint16_t FrictionFrameRate_Left = 0;
+uint16_t FrictionFrameCounter_Left = 0;
+uint16_t FrictionFrameRate_Right = 0;
+uint16_t FrictionFrameCounter_Right = 0;
+
+uint16_t BulletPlateFrameRate = 0;
+uint16_t BulletPlateFrameCounter = 0;
+
+uint16_t MiniPCFrameRate_USBRx = 0;
+uint16_t MiniPCFrameCounter_USBRx = 0;
+uint16_t MiniPCFrameRate_USBTx = 0;
+uint16_t MiniPCFrameCounter_USBTx = 0;
+
+osThreadId SuperviseHandle;
 //uint32_t lost_counter[40] = {0};		//看门狗计数(这个好像没用到,先注释掉了)
 //uint32_t test_count[7] = {0};
 
@@ -103,12 +122,6 @@ void ThreadMonitor(ThreadMonitor_t* obj,uint8_t Mode)
 //portBASE_TYPE DataStream_Stack = 1;
 portBASE_TYPE SuperviseTask_Stack = 1;
 
-extern osThreadId Led_ToggleHandle;
-extern osThreadId Data_StreamHandle;
-extern osThreadId Task_ControlHandle;
-extern osThreadId Status_UpdateHandle;
-extern osThreadId Supervise_TaskHandle;
-
 void Task_Monitor(void)
 {		
 	FrameGet();
@@ -117,7 +130,7 @@ void Task_Monitor(void)
 //-----------------------------------操作系统堆栈监测------------------------------------
 //	DataStream_Stack=uxTaskGetStackHighWaterMark(Data_StreamHandle);
 //	Control_Stack=uxTaskGetStackHighWaterMark(Task_ControlHandle);
-	SuperviseTask_Stack=uxTaskGetStackHighWaterMark(Supervise_TaskHandle);
+	SuperviseTask_Stack=uxTaskGetStackHighWaterMark(SuperviseHandle);
 }		
 
 void FrameGet(void)//获得帧率信息
@@ -126,7 +139,7 @@ void FrameGet(void)//获得帧率信息
 	DBUSFrameRate = DBUSFrameCounter*2;	
 	DBUSFrameCounter = 0;
 	
-	//CAN收发帧率统计
+	//CAN收发帧率统计(√)
 	CAN_Send_FrameRate[0] = CAN_Send_FrameCounter[0]*2;
 	CAN_Send_FrameCounter[0] = 0;
 	CAN_Send_FrameRate[1] = CAN_Send_FrameCounter[1]*2;
@@ -141,14 +154,33 @@ void FrameGet(void)//获得帧率信息
 	IMUFrameRate = IMUFrameCounter*2;
 	IMUFrameCounter = 0;
 
-	//串口2帧率检测,现在还没用到,先留着,以后可能会用
+	//串口2帧率检测(√),现在还没用到,先留着,以后可能会用
 	UART2FrameRate = UART2FrameCounter*2;
 	UART2FrameCounter = 0;
+	
+	//云台YAW、PITCH(√)
+	YAWFrameRate = YAWFrameCounter*2;
+	YAWFrameCounter = 0;	
+	PITCHFrameRate = PITCHFrameCounter*2;
+	PITCHFrameCounter = 0;
+	//miniPC(√)
+	MiniPCFrameRate_USBRx = MiniPCFrameCounter_USBRx*2;
+	MiniPCFrameCounter_USBRx = 0;	
+	MiniPCFrameRate_USBTx = MiniPCFrameCounter_USBTx*2;
+	MiniPCFrameCounter_USBTx = 0;
+	//摩擦轮(√)
+	FrictionFrameRate_Left = FrictionFrameCounter_Left*2;
+	FrictionFrameCounter_Left = 0;
+	FrictionFrameRate_Right = FrictionFrameCounter_Right*2;
+	FrictionFrameCounter_Right = 0;
+	//拨盘(√)
+	BulletPlateFrameRate = BulletPlateFrameCounter*2;
+	BulletPlateFrameCounter = 0;	
 }
 
 void ErrorFlagSet(void)//设置错误位
 {
-	//遥控器帧率过低
+	//遥控器帧率过低(√)
 	if(DBUSFrameRate < 10)
 	{
 		Set_Error_Flag(LOST_ERROR_RC);
@@ -158,35 +190,106 @@ void ErrorFlagSet(void)//设置错误位
 	{
 		Reset_Error_Flag(LOST_ERROR_RC);
 	}
-       //CAN收发帧率过低
-	if(CAN_Send_FrameRate < 400)
+       //CAN收发帧率过低(√)
+	if(CAN_Send_FrameRate[0] < 400)
 	{
 		Set_Error_Flag(LOST_ERROR_CAN_TX);
-		error_count[1]++;
+		error_count[13]++;
+	}
+	else if(CAN_Send_FrameRate[1] < 400)
+	{
+		Set_Error_Flag(LOST_ERROR_CAN_TX);
+		error_count[13]++;
 	}
 	else
 	{
 		Reset_Error_Flag(LOST_ERROR_CAN_TX);
 	}
 
-	if(CAN_Res_FrameRate < 400)
+	if(CAN_Res_FrameRate[0] < 400)
 	{
 		Set_Error_Flag(LOST_ERROR_CAN_RX);
-		error_count[2]++;
+		error_count[14]++;
+	}
+	else if(CAN_Res_FrameRate[1] < 400)
+	{
+		Set_Error_Flag(LOST_ERROR_CAN_RX);
+		error_count[14]++;	
 	}
 	else
 	{
 		Reset_Error_Flag(LOST_ERROR_CAN_RX);
 	}
+	
 	//陀螺仪检测
 	if(IMUFrameRate < 200)
 	{
 		Set_Error_Flag(LOST_ERROR_IMU);
-		error_count[3]++;
+		error_count[15]++;
 	}
 	else
 	{
 		Reset_Error_Flag(LOST_ERROR_IMU);
+	}
+	//云台(√)
+	//这个云台最低频率有点低？实际要测试下
+	if(YAWFrameRate < 200)
+	{
+		Set_Error_Flag(LOST_ERROR_MOTOR_YAW);
+		error_count[1]++;
+	}
+	else if(PITCHFrameRate < 200)
+	{
+		Set_Error_Flag(LOST_ERROR_MOTOR_PITCH);
+		error_count[2]++;
+	}
+	else
+	{
+		Reset_Error_Flag(LOST_ERROR_MOTOR_YAW);
+		Reset_Error_Flag(LOST_ERROR_MOTOR_PITCH);
+	}
+	//MiniPC(√)
+	//usb是第一次使用，具体频率还要测试。先用200
+	if(MiniPCFrameRate_USBRx < 200)
+	{
+		Set_Error_Flag(LOST_ERROR_MiniPC_USBRx);
+		error_count[6]++;
+	}
+	else if(MiniPCFrameRate_USBTx < 200)
+	{
+		Set_Error_Flag(LOST_ERROR_MiniPC_USBTx);
+		error_count[7]++;
+	}
+	else
+	{
+		Reset_Error_Flag(LOST_ERROR_MiniPC_USBRx);
+		Reset_Error_Flag(LOST_ERROR_MiniPC_USBTx);
+	}	
+	//摩擦轮(√)
+	if(FrictionFrameRate_Left < 200)
+	{
+		Set_Error_Flag(LOST_ERROR_MOTOR_Friction_Left);
+		error_count[3]++;
+	}
+	else if(FrictionFrameRate_Right <200)
+	{
+		Set_Error_Flag(LOST_ERROR_MOTOR_Friction_Right);
+		error_count[4]++;
+	}
+	else
+	{
+		Reset_Error_Flag(LOST_ERROR_MOTOR_Friction_Left);
+		Reset_Error_Flag(LOST_ERROR_MOTOR_Friction_Right);
+	}
+	//拨盘(√)
+	if(BulletPlateFrameRate < 200)
+	{
+		Set_Error_Flag(LOST_ERROR_MOTOR_BulltePlate);
+		error_count[5]++;
+	}
+	else
+	{
+		Reset_Error_Flag(LOST_ERROR_MOTOR_BulltePlate);
 	}
 }
 
