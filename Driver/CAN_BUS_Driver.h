@@ -48,7 +48,7 @@ typedef struct{
 void EncoderProcess(volatile EnCoder *v);
 void get_measure(volatile Measure *mea,uint8_t * CAN_RxData_Buffer);
 void CANReceiveMsgProcess(CAN_RxHeaderTypeDef *Rxmsg);
-
+void CAN2ReceiveMsgProcess(CAN_RxHeaderTypeDef *Rxmsg);
 
 
 

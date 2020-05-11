@@ -151,6 +151,21 @@ void CANReceiveMsgProcess(CAN_RxHeaderTypeDef *Rxmsg)
 
 
 }
+void CAN2ReceiveMsgProcess(CAN_RxHeaderTypeDef *Rxmsg)
+{
+	switch(Rxmsg->StdId)
+	{
+//		case CAN_BUS_YAWMOTO_FEEDBACK_MSG_ID:
+//		{
+//			//get_measure(&YAW_GM6020Measure,CAN1_RxData_Buffer);
+//			EncoderProcess(&YAW_GM6020Encoder);
+//			EncoderCorrection();
+//		}
+//		break;
+
+	}
+	
+}
 void CAN_DRIVER_FUN(void const* argument)
 {
 	
