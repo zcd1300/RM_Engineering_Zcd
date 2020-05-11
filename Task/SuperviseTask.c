@@ -8,14 +8,11 @@ uint32_t lost_err = 0;     //每一位代表一个错误
 uint16_t DBUSFrameRate = 0;
 uint16_t DBUSFrameCounter = 0;
 
-uint16_t CAN_Send_FrameRate = 0;
-uint16_t CAN_Send_FrameCounter = 0;
+uint16_t CAN_Send_FrameRate[2] = {0};
+uint16_t CAN_Send_FrameCounter[2] = {0};
 
-uint16_t CAN_RS_FrameRate = 0;
-uint16_t CAN_RS_FrameCounter = 0;
-
-uint16_t CAN_Res_FrameRate = 0;
-uint16_t CAN_Res_FrameCounter = 0;
+uint16_t CAN_Res_FrameRate[2] = {0};
+uint16_t CAN_Res_FrameCounter[2] = {0};
 
 uint16_t UART2FrameRate = 0;
 uint16_t UART2FrameCounter = 0;
@@ -102,8 +99,8 @@ void ThreadMonitor(ThreadMonitor_t* obj,uint8_t Mode)
 	}	
 }
 
-portBASE_TYPE Control_Stack = 1;
-portBASE_TYPE DataStream_Stack = 1;
+//portBASE_TYPE Control_Stack = 1;
+//portBASE_TYPE DataStream_Stack = 1;
 portBASE_TYPE SuperviseTask_Stack = 1;
 
 extern osThreadId Led_ToggleHandle;
@@ -118,38 +115,33 @@ void Task_Monitor(void)
 	ErrorFlagSet();
 		
 //-----------------------------------操作系统堆栈监测------------------------------------
-	DataStream_Stack=uxTaskGetStackHighWaterMark(Data_StreamHandle);
-	Control_Stack=uxTaskGetStackHighWaterMark(Task_ControlHandle);
+//	DataStream_Stack=uxTaskGetStackHighWaterMark(Data_StreamHandle);
+//	Control_Stack=uxTaskGetStackHighWaterMark(Task_ControlHandle);
 	SuperviseTask_Stack=uxTaskGetStackHighWaterMark(Supervise_TaskHandle);
 }		
 
 void FrameGet(void)//获得帧率信息
 {
-	//DBUS帧率统计
+	//DBUS帧率统计(√)
 	DBUSFrameRate = DBUSFrameCounter*2;	
 	DBUSFrameCounter = 0;
 	
-	//底盘电机帧率统计
-	ChassisFrameRate[0] = ChassisFrameCounter[0]*2;
-	ChassisFrameCounter[0] = 0;
-	ChassisFrameRate[1] = ChassisFrameCounter[1]*2;
-	ChassisFrameCounter[1] = 0;
-	ChassisFrameRate[2] = ChassisFrameCounter[2]*2;
-	ChassisFrameCounter[2] = 0;
-	ChassisFrameRate[3] = ChassisFrameCounter[3]*2;
-	ChassisFrameCounter[3] = 0;
-		
 	//CAN收发帧率统计
-	CAN_Send_FrameRate = CAN_Send_FrameCounter*2;
-	CAN_Send_FrameCounter = 0;
-
+	CAN_Send_FrameRate[0] = CAN_Send_FrameCounter[0]*2;
+	CAN_Send_FrameCounter[0] = 0;
+	CAN_Send_FrameRate[1] = CAN_Send_FrameCounter[1]*2;
+	CAN_Send_FrameCounter[1] =0;
+	
+	CAN_Res_FrameRate[0] = CAN_Res_FrameCounter[0]*2;
+	CAN_Res_FrameCounter[0] = 0;
+	CAN_Res_FrameRate[1] = CAN_Res_FrameCounter[1]*2;
+	CAN_Res_FrameCounter[1] = 0;
+	
+	//陀螺仪帧率
 	IMUFrameRate = IMUFrameCounter*2;
 	IMUFrameCounter = 0;
 
-	CAN_Res_FrameRate = CAN_Res_FrameCounter*2;
-	CAN_Res_FrameCounter = 0;
-
-	//串口2帧率检测
+	//串口2帧率检测,现在还没用到,先留着,以后可能会用
 	UART2FrameRate = UART2FrameCounter*2;
 	UART2FrameCounter = 0;
 }
@@ -255,4 +247,8 @@ void Supervise(void const * argument)
 	}
 }
 osThreadId SuperviseHandle;
-
+void SuperviseThreadCreate(osPriority taskPriority)
+{
+	osThreadDef(SuperviseThread,Supervise,taskPriority,0,256);
+	SuperviseHandle = osThreadCreate(osThread(SuperviseThread),NULL);
+}

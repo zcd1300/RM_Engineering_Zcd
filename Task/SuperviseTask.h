@@ -53,15 +53,11 @@ extern uint32_t lost_counter[40];
 extern uint16_t DBUSFrameRate;
 extern uint16_t DBUSFrameCounter;
 
-extern uint16_t ChassisFrameRate[4];
-extern uint16_t ChassisFrameCounter[4];
+extern uint16_t CAN_Send_FrameRate[2];
+extern uint16_t CAN_Send_FrameCounter[2];
 
-
-extern uint16_t CAN_Send_FrameRate;
-extern uint16_t CAN_Send_FrameCounter;
-
-extern uint16_t CAN_Res_FrameRate;
-extern uint16_t CAN_Res_FrameCounter;
+extern uint16_t CAN_Res_FrameRate[2];
+extern uint16_t CAN_Res_FrameCounter[2];
 
 extern uint16_t UART2FrameRate;
 extern uint16_t UART2FrameCounter;
