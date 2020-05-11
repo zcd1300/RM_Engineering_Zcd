@@ -64,7 +64,7 @@ uint8_t Is_Serious_Error()
 
 	#endif
 }
-不知道2019年的工程会不会用到，所以先注释掉*/
+不知道2020年的工程会不会用到，所以先注释掉*/
 
 /**
   * @brief  用于监控线程的占用情况
@@ -73,7 +73,7 @@ uint8_t Is_Serious_Error()
   */
 void ThreadMonitor(ThreadMonitor_t* obj,uint8_t Mode)
 {
-	uint32_t currentTime = xTaskGetTickCount();//18年步兵用的是自己写的Get_Time_Micros()，我暂时还不知道区别
+	uint32_t currentTime = xTaskGetTickCount();			//步兵老版用的是自己写的Get_Time_Micros()，直接读取TIM2->CNT
 	if(Mode == THREAD_IN)
 	{
 		obj->deltaTime = xTaskGetTickCount() - obj->previousTime;	//距离距离上次运行的时间
@@ -94,7 +94,7 @@ uint16_t DBUSFrameCounter = 0;
 
 uint16_t ChassisFrameRate[4] = {0};
 uint16_t ChassisFrameCounter[4] = {0};
-
+/*//先用不到，注释掉
 uint16_t LiftChainFrameRate[4] = {0};
 uint16_t LiftChainFrameCounter[4] = {0};
 
@@ -106,7 +106,7 @@ uint16_t MoveArmMotorFrameCounter = 0;
 
 uint16_t FlipArmMotorFrameRate = 0;
 uint16_t FlipArmMotorFrameCounter = 0;
-
+*/
 
 uint16_t CAN_Send_FrameRate = 0;
 uint16_t CAN_Send_FrameCounter = 0;
@@ -138,7 +138,7 @@ void Task_Monitor(void)
 		
 		FrameGet();
 		ErrorFlagSet();
-		BeepForError();
+//		BeepForError();
 		
 		
 		
@@ -166,7 +166,7 @@ void FrameGet(void)//获得帧率信息
 			ChassisFrameRate[3] = ChassisFrameCounter[3]*2;
 			ChassisFrameCounter[3] = 0;
 			
-      //底盘抬升电机帧率统计
+/*      //底盘抬升电机帧率统计
 			LiftChainFrameRate[0] = LiftChainFrameCounter[0]*2;
 		  LiftChainFrameCounter[0] = 0;
 			LiftChainFrameRate[1] = LiftChainFrameCounter[1]*2;
@@ -194,7 +194,7 @@ void FrameGet(void)//获得帧率信息
 			//翻转电机帧率统计
 			FlipArmMotorFrameRate = FlipArmMotorFrameCounter*2;
 			FlipArmMotorFrameCounter = 0;
-				
+*/				
       //CAN收发帧率统计
 			CAN_Send_FrameRate = CAN_Send_FrameCounter*2;
 			CAN_Send_FrameCounter = 0;
@@ -263,7 +263,8 @@ void ErrorFlagSet(void)//设置错误位
 		{
 			Reset_Error_Flag(LOST_ERROR_MOTOR_CHASSIS4);
 		}
-		
+
+/*		
     //伸缩腿抬升电机帧率过低
 		if(LiftChainFrameRate[0] < 200)
 		{
@@ -350,7 +351,7 @@ void ErrorFlagSet(void)//设置错误位
 		{
 			Reset_Error_Flag(LOST_ERROR_MOTOR_FLIP);
 		}
-		
+*/		
         //CAN收发帧率过低
     if(CAN_Send_FrameRate < 400)
 		{
@@ -384,7 +385,7 @@ void ErrorFlagSet(void)//设置错误位
 }
 
 
-
+/*
 void BeepForError(void)
 {
 	if(lost_err & 0x0001 )
@@ -427,7 +428,7 @@ void BeepForError(void)
 		TIM12->CCR1 = 0;
 	}
 }
-
+*/
 
 void Supervise_Task(void const * argument)//帧率检测,错误判断
 {
