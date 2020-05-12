@@ -1,6 +1,6 @@
 /*函数中要使用的结构体*/
 #include "DriverLib_Ramp.h"
-#include "math.h"
+#include "stdlib.h"
 #include "Driver_Chassis.h"
 #include "Remote_Driver.h"
 
@@ -83,7 +83,8 @@ void CM_Get_SpeedRef(void)
 		static float Y_temp = 0;
 		static float X_temp = 0;
 		//限制遥控器加速度
-		if(abs(RC_CtrlData.rc.Channel_2 - Y_temp) > underpan_acc)
+		//这里的强制转化可能存在问题，但是abs一直提示警告太烦了，先这样吧，VS里运行着没问题
+		if(abs(RC_CtrlData.rc.Channel_2 - (int16_t)Y_temp) > underpan_acc)
 		{
 			if(RC_CtrlData.rc.Channel_2 >Y_temp && RC_CtrlData.rc.Channel_2 > 0)
 				Y_temp+=underpan_acc;
@@ -97,7 +98,7 @@ void CM_Get_SpeedRef(void)
 			Y_temp = RC_CtrlData.rc.Channel_2;
 		}
 		
-		if(abs(RC_CtrlData.rc.Channel_1 - X_temp) > underpan_acc)
+		if(abs(RC_CtrlData.rc.Channel_1 - (int16_t)X_temp) > underpan_acc)
 		{
 			if(RC_CtrlData.rc.Channel_1 >X_temp && RC_CtrlData.rc.Channel_1 > 0)
 				X_temp+=underpan_acc;
@@ -120,12 +121,6 @@ void CM_Get_SpeedRef(void)
 	
 		Key2Speed(NORMAL_FORWARD_BACK_SPEED, NORMAL_LEFT_RIGHT_SPEED);
 		//下面三个是使用其他按键控制速度的，先保留着吧 
-//		if(upisland_flag)
-//		{
-//				Key2Speed(LOW_FORWARD_BACK_SPEED, LOW_LEFT_RIGHT_SPEED);
-
-//		
-//		}
 		if(Remote_CheckJumpKey(KEY_SHIFT))
 		{
 				Key2Speed(HIGH_FORWARD_BACK_SPEED, HIGH_LEFT_RIGHT_SPEED);
