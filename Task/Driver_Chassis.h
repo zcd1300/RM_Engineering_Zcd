@@ -3,6 +3,7 @@
 #define __CHASSIS_H
 
 #include "stdint.h"
+#include "cmsis_os.h"
 //#include "PID.h"
 
 
@@ -45,7 +46,7 @@ typedef enum
 
 void CM_Get_SpeedRef(void);
 void Key2Speed(int16_t FB, int16_t LR);
-
+void Chassis_DecodeThreadCreate(osPriority taskPriority);
 
 
 

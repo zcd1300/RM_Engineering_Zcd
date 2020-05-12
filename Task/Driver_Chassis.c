@@ -3,7 +3,7 @@
 #include "stdlib.h"
 #include "Driver_Chassis.h"
 #include "Remote_Driver.h"
-
+#include "cmsis_os.h"
 
 float CM_SPEED_C = 1;
 float CM_OMEGA_C = 1;
@@ -137,4 +137,22 @@ void CM_Get_SpeedRef(void)
 		ChassisData.ChassisAngle = 0;
 	
 	}
+}
+
+void Chassis_Decode(void const* argument)
+{
+	portTickType xLastWakeTime;
+	xLastWakeTime = xTaskGetTickCount();
+	for(;;)
+	{
+		CM_Get_SpeedRef();
+		osDelayUntil(&xLastWakeTime,20/portTICK_RATE_MS);
+	}
+}
+osThreadId Chassis_DecodeHandle;
+void Chassis_DecodeThreadCreate(osPriority taskPriority)
+{
+	osThreadDef(Chassis_DecodeThread,Chassis_Decode,taskPriority,0,128);
+	Chassis_DecodeHandle = osThreadCreate(osThread(Chassis_DecodeThread),NULL);
+	
 }
