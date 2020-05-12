@@ -8,6 +8,7 @@
 #include "Motor_ConttrolTask.h"
 #include "Remote_Driver.h"
 #include "SuperviseTask.h"
+#include "Friction.h"
 
 WorkState_e WorkState;
 WorkState_e LastWorkState =STOP_STATE;
@@ -390,3 +391,4 @@ void StateMachineThreadCreate(osPriority taskPriority)
 /**
   @CompletionTime 2020 5 6
 */
+

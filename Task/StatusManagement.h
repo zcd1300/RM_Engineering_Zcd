@@ -62,19 +62,6 @@ typedef  enum
 	MoveDebug = 0x04,
 }Chassis_MoveMode_t;
 
-typedef enum
-{
-	FRICTION_WHEEL_OFF = 0,
-	FRICTION_WHEEL_START_TURNNING = 1,
-	FRICTION_WHEEL_ON = 2,
-}FrictionWheelState_e;
-
-typedef enum
-{
-	NOSHOOTING = 0,
-	SHOOTING = 1,
-}Shoot_State_e;
-
 typedef enum  //具体的自动控制状态还没确定，先放着吧
 {
 	Auto_NoMovement,
