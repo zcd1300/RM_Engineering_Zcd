@@ -12,9 +12,6 @@ void RampInit(RampGen_t *ramp, int32_t XSCALE)
 {
 }
 
-
-
-
 float RampCalc(RampGen_t *ramp)
 {
 	ramp->count++;

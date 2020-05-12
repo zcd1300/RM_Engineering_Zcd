@@ -9,6 +9,7 @@
 #include "Remote_Driver.h"
 #include "SuperviseTask.h"
 #include "Friction.h"
+#include "Driver_Chassis.h"
 
 WorkState_e WorkState;
 WorkState_e LastWorkState =STOP_STATE;
@@ -76,7 +77,6 @@ void State_Update(void)
 				WorkState = KEYBOARD_RC_STATE;
 				}
 			}		
-		
 		}break;
 		case NORMAL_RC_STATE:
 		{
@@ -88,7 +88,6 @@ void State_Update(void)
 			{
 				WorkState = STOP_STATE;
 			}		
-		
 		}break;
 		case KEYBOARD_RC_STATE:
 		{
@@ -113,7 +112,7 @@ void State_Update(void)
 	}
 	WorkstateInit();
 }
-//------------------------------------------
+//------------------------------------------遥控器直接控制(√)
 void InputMode_Select(void)
 {
 	if(RC_CtrlData.rc.switch_right == SWITCH_UP)
@@ -132,7 +131,7 @@ void InputMode_Select(void)
 
 
 //------------------------------------------
-//这个函数还没完成，只能等开学完成了
+//这个函数还没完成，等开学完成
 void OperateMode_Select(void)
 {
 	switch(WorkState)
@@ -284,33 +283,32 @@ void GimbalMode_Select(void)
 
 }
 
-//------------------------------------------底盘状态
+//------------------------------------------底盘状态(√)
 void ChassisMode_Select(void)
 {
 	switch(WorkState)
 	{
 		case PREPARE_STATE:
 		{
-		
+			ChassisMode = Chassis_Locked;
 		
 		}break;
 		case NORMAL_RC_STATE:
 		{
-		
+			ChassisMode = Chassis_NormalRCMode;
 		}break;
 		case KEYBOARD_RC_STATE:
 		{
-		
+			ChassisMode = Chassis_KeyMouseMode;
 		}break;
 		case STOP_STATE:
 		{
-		
+			ChassisMode = Chassis_Locked;		
 		}break;
 		default:
 		{
-			
-		}
-		
+			ChassisMode = Chassis_Locked;
+		}break;
 	}
 
 
@@ -341,8 +339,6 @@ void FrictionMode_Select(void)
 			
 		}
 	}
-
-
 }
 //------------------------------------------拨盘状态先空着吧，这个的状态切换函数可能需要单独写
 
@@ -354,9 +350,8 @@ void StatusMachine_Init(void)//目前还没被调用，在上电时应该被调用。在切会prepare
 	WorkState = PREPARE_STATE;
 	AutoMovement = Auto_NoMovement;
 	Attack_Mode = Attack_Normal;
+	ChassisMode = Chassis_Locked;
 	//还有其他初始化，等完善后再添加
-	
-
 }
 
 //------------------------------------------
@@ -365,9 +360,9 @@ void StatusMachine_Update(void)
 	InputMode_Select();		//遥控器 右侧按键 控制的，输入状态切换（键鼠/遥控/停止）
 	State_Update();			//整车状态切换，受InputMode影响
 	OperateMode_Select();	//操作模式切换，受WorkState和遥控 左侧按键 影响
-	DriverMode_Select();		//运行模式切换，受OperateMode和遥控数据影响
+	DriverMode_Select();	//运行模式切换，受OperateMode和遥控数据影响
+	ChassisMode_Select();
 }
-
 
 void StateMachine(void const* argument)
 {

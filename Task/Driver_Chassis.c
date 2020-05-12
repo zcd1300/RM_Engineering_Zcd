@@ -23,7 +23,7 @@ void Key2Speed(int16_t FB, int16_t LR)
 	tmp_FB = FB ;
 	tmp_LR = LR ;
 
-
+	//这里的高速模式和新版工程的发弹有逻辑冲突
 	if(Remote_CheckJumpKey(KEY_W) == 1&&RC_CtrlData.mouse.press_r == 0 &&RC_CtrlData.mouse.press_l == 0)
 	{
 		ChassisData.ChassisSpeedRef.Y = tmp_FB*FBSpeedRamp.Calc(&FBSpeedRamp);
@@ -53,15 +53,11 @@ void Key2Speed(int16_t FB, int16_t LR)
 		LRSpeedRamp.SetCounter(&LRSpeedRamp, MOUSE_LR_RAMP_TICK_COUNT *0.2);
 		ChassisData.ChassisSpeedRef.X = 0;
 	}
-	
-	
-	
-	
 }
 
 
-
 /*得到x，y,omega的函数*/ 
+//底盘数据解算只用调用这个函数就行了
 void CM_Get_SpeedRef(void)
 {
 	if(ChassisMode == Chassis_Locked)
@@ -120,7 +116,7 @@ void CM_Get_SpeedRef(void)
 		
 	
 		Key2Speed(NORMAL_FORWARD_BACK_SPEED, NORMAL_LEFT_RIGHT_SPEED);
-		//下面三个是使用其他按键控制速度的，先保留着吧 
+		//下面两个是使用其他按键控制速度的，先保留着吧 
 		if(Remote_CheckJumpKey(KEY_SHIFT))
 		{
 				Key2Speed(HIGH_FORWARD_BACK_SPEED, HIGH_LEFT_RIGHT_SPEED);
