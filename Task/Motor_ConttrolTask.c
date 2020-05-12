@@ -14,6 +14,7 @@
 #include "Motor_ConttrolTask.h" 
 #include "User_Math.h"
 #include "Fuzzy_Controller.h"
+#include "StatusManagement.h"
 //#include "Friction.h"
 //#include "usart.h"
 //#include "XDU_USB_HID_Z.h"
@@ -186,26 +187,58 @@ void Mouse_GM_Control(void)//尚未测试完善
 	CAN1_Send(CAN1_Tx_Buff_Ext,0x1FF);
 }
 
-void MOTOR_CONTROL(void const* argument)
+/**
+ * @brief  Gimbal State switch
+ * @param void
+ * @retval void
+ * @ZCD
+ * @Time 2020 5 12 
+*/
+void GimbalMode_Switch(void)
 {
-
-	for(;;)
-	{	
-	
-		if(RC_CtrlData.rc.switch_left==SWITCH_DOWN)
-		{	
-			Vision_GMMoto_Control();		
-		}
-		else if(RC_CtrlData.rc.switch_left==SWITCH_UP)
-		{	
-			RC_GM_Control();			
-		}
-		else
+	switch(Gimbal_Mode)
+	{
+		case Gimbal_Prepare:
 		{
 			GM_prepare();
-		}
-		osDelay(10/portTICK_RATE_MS);
+		}break;
+		case Gimbal_Stop:
+		{
+			GM_prepare();//云台停止，为了防止云台收不到信号疯掉，切换到准备状态
+		}break;
+		case Gimbal_RC_Mode:
+		{
+			RC_GM_Control();
+		}break;
+		case Gimbal_Mouse_Mode:
+		{
+			Mouse_GM_Control();//鼠标控制还没详细测试
+		}break;
+		case Gimbal_Follow:
+		{
+			Vision_GMMoto_Control();//视觉跟踪模式，视觉联调还是有点问题
+		}break;
+		case Gimbal_Debug:
+		{
+		//云台校准、可以对应LED闪烁
+			
+		}break;
+		default:
+		{
+			GM_prepare();
+		}break;
+	}
+}
 	
+
+void MOTOR_CONTROL(void const* argument)
+{
+	portTickType xLastWakeTime;
+	xLastWakeTime = xTaskGetTickCount();
+	for(;;)
+	{	
+		GimbalMode_Switch();
+		osDelayUntil(&xLastWakeTime,10/portTICK_RATE_MS);
 	}
 }
 

@@ -259,20 +259,19 @@ void GimbalMode_Select(void)
 	{
 		case PREPARE_STATE:
 		{
-		
+			Gimbal_Mode = Gimbal_Prepare;
 		}break;
 		case NORMAL_RC_STATE:
 		{
-		
-		
+			Gimbal_Mode = Gimbal_RC_Mode;
 		}break;
 		case KEYBOARD_RC_STATE:
 		{
-		
+			Gimbal_Mode = Gimbal_Mouse_Mode;
 		}break;
 		case STOP_STATE:
 		{
-		
+			Gimbal_Mode = Gimbal_Stop;
 		}break;
 		default:
 		{
@@ -351,6 +350,7 @@ void StatusMachine_Init(void)//目前还没被调用，在上电时应该被调用。在切会prepare
 	AutoMovement = Auto_NoMovement;
 	Attack_Mode = Attack_Normal;
 	ChassisMode = Chassis_Locked;
+	Gimbal_Mode = Gimbal_Stop;
 	//还有其他初始化，等完善后再添加
 }
 

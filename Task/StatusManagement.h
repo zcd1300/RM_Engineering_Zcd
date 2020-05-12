@@ -46,9 +46,9 @@ typedef enum
 	Gimbal_Stop = 1,
 	Gimbal_RC_Mode = 2,
 	Gimbal_Mouse_Mode = 3,
-	Gimbal_Auto = 4,//大符
+//	Gimbal_Auto = 4,//大符
 	Gimbal_Follow = 5,//自动跟踪
-	Gimbal_Standby = 6,
+//	Gimbal_Standby = 6,
 	Gimbal_Debug = 7,
 	
 }Gimbal_MoveMode_t;
@@ -78,6 +78,7 @@ typedef enum  //具体的自动控制状态还没确定，先放着吧
 
 extern WorkState_e 	WorkState;
 extern OperateMode_e OperateMode;
+extern Gimbal_MoveMode_t Gimbal_Mode;
 
 void StatusMachine_Init(void);
 InputMode_e GetInputMode(void);
