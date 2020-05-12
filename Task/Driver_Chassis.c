@@ -5,6 +5,10 @@
 #include "Remote_Driver.h"
 
 
+float CM_SPEED_C = 1;
+float CM_OMEGA_C = 1;
+float underpan_acc = 30;
+
 ChassisDataTypeDef ChassisData; 
 ChassisMode_e ChassisMode;
 
@@ -116,12 +120,12 @@ void CM_Get_SpeedRef(void)
 	
 		Key2Speed(NORMAL_FORWARD_BACK_SPEED, NORMAL_LEFT_RIGHT_SPEED);
 		//下面三个是使用其他按键控制速度的，先保留着吧 
-		if(upisland_flag)
-		{
-				Key2Speed(LOW_FORWARD_BACK_SPEED, LOW_LEFT_RIGHT_SPEED);
+//		if(upisland_flag)
+//		{
+//				Key2Speed(LOW_FORWARD_BACK_SPEED, LOW_LEFT_RIGHT_SPEED);
 
-		
-		}
+//		
+//		}
 		if(Remote_CheckJumpKey(KEY_SHIFT))
 		{
 				Key2Speed(HIGH_FORWARD_BACK_SPEED, HIGH_LEFT_RIGHT_SPEED);
