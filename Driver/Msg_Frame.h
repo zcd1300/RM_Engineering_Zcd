@@ -32,7 +32,7 @@
 
 
 
-
+void SendTo_ChassisTaskCreate(osPriority taskPriority);
 
 //**********************Frame head structural morphology*************************//
 
