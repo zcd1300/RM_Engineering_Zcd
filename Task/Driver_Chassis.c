@@ -152,7 +152,7 @@ void Chassis_Decode(void const* argument)
 osThreadId Chassis_DecodeHandle;
 void Chassis_DecodeThreadCreate(osPriority taskPriority)
 {
-	osThreadDef(Chassis_DecodeThread,Chassis_Decode,taskPriority,0,128);
+	osThreadDef(Chassis_DecodeThread,Chassis_Decode,taskPriority,0,256);
 	Chassis_DecodeHandle = osThreadCreate(osThread(Chassis_DecodeThread),NULL);
 	
 }

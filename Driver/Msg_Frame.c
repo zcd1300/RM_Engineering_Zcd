@@ -14,6 +14,7 @@
 #include "cmsis_os.h" 
 #include "Motor_ConttrolTask.h"
 #include "SuperviseTask.h"
+#include "Driver_Chassis.h"
 
 float Temp_Yaw=0;
 float Temp_Pitch=0;
@@ -112,13 +113,12 @@ void SendTo_Chassis(void)
 	
 	int8_t Send_temp = YAW_GM6020Encoder.ecd_angle-YAW_Initial_Angle;
 	CAN2_Tx_Buff_Ext[0]= Send_temp;
-//	CAN2_Tx_Buff_Ext[0]= YAW_GM6020Encoder.ecd_value >>24;
-//	CAN2_Tx_Buff_Ext[1]= YAW_GM6020Encoder.ecd_value >>16;
-//	CAN2_Tx_Buff_Ext[2]= YAW_GM6020Encoder.ecd_value >>8;
-//	CAN2_Tx_Buff_Ext[3]= YAW_GM6020Encoder.ecd_value ;
-//	CAN2_Tx_Buff_Ext[4]= (int16_t)(YAW_GM6020Encoder.ecd_angle*100) >>8;
-//	CAN2_Tx_Buff_Ext[5]= (int16_t)(YAW_GM6020Encoder.ecd_angle*100) ;
-//	CAN2_Tx_Buff_Ext[6]= (int16_t)(YAW_GM6020Encoder.ecd_angle*100) >>8;
+	CAN2_Tx_Buff_Ext[1]= ChassisData.ChassisSpeedRef.X >>8;
+	CAN2_Tx_Buff_Ext[2]= ChassisData.ChassisSpeedRef.X;
+	CAN2_Tx_Buff_Ext[3]= ChassisData.ChassisSpeedRef.Y >>8;
+	CAN2_Tx_Buff_Ext[4]= ChassisData.ChassisSpeedRef.Y;
+	CAN2_Tx_Buff_Ext[5]= ChassisData.ChassisSpeedRef.Omega >>8;
+	CAN2_Tx_Buff_Ext[6]= ChassisData.ChassisSpeedRef.Omega;
 //	CAN2_Tx_Buff_Ext[7]= (int16_t)(YAW_GM6020Encoder.ecd_angle*100) ;
 //	
 	CAN2_Send(CAN2_Tx_Buff_Ext,0x300);
@@ -144,11 +144,12 @@ void USB_TransmitTaskCreate(osPriority taskPriority)
 }
 void SendTo_ChassisTask(void const* argument)
 {
-
+	portTickType xLastWakeTime;
+	xLastWakeTime = xTaskGetTickCount();
 	for(;;)
 	{
 		SendTo_Chassis();
-		osDelay(10/portTICK_RATE_MS);
+		osDelayUntil(&xLastWakeTime,10/portTICK_RATE_MS);
 	}
 
 }
