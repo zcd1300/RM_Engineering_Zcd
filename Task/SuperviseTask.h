@@ -47,7 +47,7 @@ typedef struct
 //#define LOST_ERROR_ALL (LOST_ERROR_RC|LOST_ERROR_IMU|LOST_ERROR_MOTOR1|LOST_ERROR_MOTOR2|LOST_ERROR_MOTOR3|LOST_ERROR_MOTOR4|LOST_ERROR_GIMBAL_YAW|LOST_ERROR_GIMBAL_YAW|LOST_ERROR_DEADLOCK|LOST_ERROR_NOCALI)
 
 extern uint32_t lost_err;
-extern uint32_t lost_counter[40];
+//extern uint32_t lost_counter[40];
 
 
 extern uint16_t DBUSFrameRate;

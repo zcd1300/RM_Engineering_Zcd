@@ -19,7 +19,8 @@ Attack_Mode_e Attack_Mode;
 Gimbal_MoveMode_t Gimbal_Mode;
 Chassis_MoveMode_t Move_Mode;
 
-extern uint32_t time_tick_1ms;
+uint32_t time_tick_1ms=0;
+uint8_t GimbalCalibration_Flag=0;
 
 //函数未完成
 static void WorkstateInit(void)
@@ -49,9 +50,11 @@ void State_Update(void)
 		return;
 	}
 	//云台、陀螺仪校准
-	else if()
+	else if(GimbalCalibration_Flag)
 	{
-	
+		Move_Mode = MoveDebug;
+		Gimbal_Mode = Gimbal_Debug;
+		//具体校准的函数还没写，写完了记得删掉
 		return;
 	}
 //	//其他错误标志
@@ -235,9 +238,9 @@ void AttackMode_Select(void)
 	static uint32_t time_stamp_1 = 0;
 	if(InputMode == KEYBOARD_INPUT)
 	{
-		if(Remote_CheckJumpKey(KEY_Q)==1 && )
+		if(Remote_CheckJumpKey(KEY_Q)==1 && xTaskGetTickCount()- time_stamp_1 > 200000)
 		{
-			if(Attack_Mode = )
+			if(Attack_Mode == Attack_Insurance)
 			{	
 				Attack_Mode = Attack_Normal;
 			}

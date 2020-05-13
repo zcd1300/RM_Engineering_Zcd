@@ -68,11 +68,11 @@ void Reset_Error_Flag(uint32_t index)
 	lost_err &= (uint32_t)~(1<<index);
 }                                    
 
-//获取计数的地址
-uint32_t *GetLostCounter(uint32_t index)
-{
-	return (uint32_t *)&lost_counter[index];
-}
+////获取计数的地址
+//uint32_t *GetLostCounter(uint32_t index)
+//{
+//	return (uint32_t *)&lost_counter[index];
+//}
 //获取计数上限
 uint16_t GetLostCounter_max(uint32_t index)
 {
@@ -130,7 +130,8 @@ void Task_Monitor(void)
 //-----------------------------------操作系统堆栈监测------------------------------------
 //	DataStream_Stack=uxTaskGetStackHighWaterMark(Data_StreamHandle);
 //	Control_Stack=uxTaskGetStackHighWaterMark(Task_ControlHandle);
-	SuperviseTask_Stack=uxTaskGetStackHighWaterMark(SuperviseHandle);
+	SuperviseTask_Stack = uxTaskGetStackHighWaterMark(SuperviseHandle);
+//	uxTaskGetStackHighWaterMark函数要在CubeMX中勾选Enable,这里我手动使能函数。
 }		
 
 void FrameGet(void)//获得帧率信息

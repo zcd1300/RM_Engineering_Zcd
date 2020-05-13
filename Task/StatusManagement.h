@@ -80,6 +80,9 @@ extern WorkState_e 	WorkState;
 extern OperateMode_e OperateMode;
 extern Gimbal_MoveMode_t Gimbal_Mode;
 
+extern uint8_t GimbalCalibration_Flag;
+extern uint32_t time_tick_1ms;
+
 void StatusMachine_Init(void);
 InputMode_e GetInputMode(void);
 void StateMachineThreadCreate(osPriority taskPriority);
