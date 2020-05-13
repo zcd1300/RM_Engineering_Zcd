@@ -346,7 +346,7 @@ void Supervise(void const * argument)
 	for(;;)
 	{
 		Task_Monitor();	
-		vTaskDelayUntil(&xLastWakeTime,500/portTICK_RATE_MS);//运行间隔0.5s
+		osDelayUntil(&xLastWakeTime,500/portTICK_RATE_MS);//运行间隔0.5s
 	}
 }
 osThreadId SuperviseHandle;

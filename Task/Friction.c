@@ -181,37 +181,19 @@ void BulletPlate_Control(void)
 osThreadId FrictionThread_Handle;
 void FrictionTask(void const* argument)
 {
+	portTickType xLastWakeTime;
+	xLastWakeTime = xTaskGetTickCount();	
 	
 	FrictionWheel_Speed=Speed_Low;
 	
 	for(;;)
 	{
-		if(RC_CtrlData.rc.switch_left==SWITCH_CENTRAL)
-		{
-			friction_wheel_state=FRICTION_WHEEL_OFF;
-
-		}
-		else if(RC_CtrlData.rc.switch_left==SWITCH_UP)
-		{
-			friction_wheel_state=FRICTION_WHEEL_ON;
-			Shoot_State=SHOOTING;
-		}
-		else if(RC_CtrlData.rc.switch_left==SWITCH_DOWN)
-		{
-			friction_wheel_state=FRICTION_WHEEL_OFF;		
-		}
-		else
-		{
-			friction_wheel_state=FRICTION_WHEEL_OFF;
-		
-		}
-	BulletPlate_Control();
-	Frition_Control();
-	osDelay(10);		
+		BulletPlate_Control();
+		Frition_Control();
+		osDelayUntil(&xLastWakeTime,10/portTICK_RATE_MS);		
 	}
 
 }
-
 void FrictionThreadCreate(osPriority taskPriority)
 {
 	osThreadDef(Friction_ControlThread,FrictionTask,taskPriority,0,256);

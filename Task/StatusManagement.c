@@ -54,12 +54,12 @@ void State_Update(void)
 	
 		return;
 	}
-	//其他错误标志
-	else if()
-	{
-	
-		return;
-	}
+//	//其他错误标志
+//	else if()
+//	{
+//	
+//		return;
+//	}
 	//以上是需要直接转换状态的情况
 	
 	switch(WorkState)
