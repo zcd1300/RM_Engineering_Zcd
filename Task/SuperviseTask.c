@@ -192,34 +192,36 @@ void ErrorFlagSet(void)//设置错误位
 		Reset_Error_Flag(LOST_ERROR_RC);
 	}
        //CAN收发帧率过低(√)
-	if(CAN_Send_FrameRate[0] < 400)
+	if(CAN_Send_FrameRate[0] < 100)
 	{
-		Set_Error_Flag(LOST_ERROR_CAN_TX);
-		error_count[13]++;
+		Set_Error_Flag(LOST_ERROR_CAN_TX1);
+		error_count[11]++;
 	}
-	else if(CAN_Send_FrameRate[1] < 400)
+	else if(CAN_Send_FrameRate[1] < 100)
 	{
-		Set_Error_Flag(LOST_ERROR_CAN_TX);
-		error_count[13]++;
+		Set_Error_Flag(LOST_ERROR_CAN_TX2);
+		error_count[12]++;
 	}
 	else
 	{
-		Reset_Error_Flag(LOST_ERROR_CAN_TX);
+		Reset_Error_Flag(LOST_ERROR_CAN_TX1);
+		Reset_Error_Flag(LOST_ERROR_CAN_TX2);
 	}
 
-	if(CAN_Res_FrameRate[0] < 400)
+	if(CAN_Res_FrameRate[0] < 50)
 	{
-		Set_Error_Flag(LOST_ERROR_CAN_RX);
-		error_count[14]++;
+		Set_Error_Flag(LOST_ERROR_CAN_RX1);
+		error_count[13]++;
 	}
-	else if(CAN_Res_FrameRate[1] < 400)
+	else if(CAN_Res_FrameRate[1] < 50)
 	{
-		Set_Error_Flag(LOST_ERROR_CAN_RX);
+		Set_Error_Flag(LOST_ERROR_CAN_RX2);
 		error_count[14]++;	
 	}
 	else
 	{
-		Reset_Error_Flag(LOST_ERROR_CAN_RX);
+		Reset_Error_Flag(LOST_ERROR_CAN_RX1);
+		Reset_Error_Flag(LOST_ERROR_CAN_RX2);
 	}
 	
 	//陀螺仪检测

@@ -15,10 +15,10 @@
 #define LOST_ERROR_1				8u		//Áô¿Õ
 #define LOST_ERROR_2				9u      //Áô¿Õ
 #define LOST_ERROR_3				10u     //Áô¿Õ
-#define LOST_ERROR_4				11u     //Áô¿Õ
-#define LOFT_ERROR_5				12u		//Áô¿Õ
-#define LOST_ERROR_CAN_TX          			13u
-#define LOST_ERROR_CAN_RX            	  	14u
+#define LOST_ERROR_CAN_TX1					11u    
+#define LOST_ERROR_CAN_TX2					12u	
+#define LOST_ERROR_CAN_RX1         			13u
+#define LOST_ERROR_CAN_RX2            	  	14u
 #define LOST_ERROR_IMU						15u						
 
 typedef __packed struct  Lost_Counter_Max
