@@ -18,7 +18,7 @@ void PID_Calc(PID_Regulator_t *pid)
 	pid->err[1]=pid->ref-pid->fdb;//误差
 	pid->err[2]+=pid->err[1];//积分
 	
-	if(abs((int)pid->err[1])<pid->deadband)
+	if(abs((int)pid->err[1])>=pid->deadband)
 	{
 		VAL_LIMIT(pid->err[2],-pid->componentKiMax/pid->ki,pid->componentKiMax/pid->ki);	//抗饱和积分
 		pid->output=pid->kp*pid->err[1]  +  pid->ki*pid->err[2]  +    pid->kd*(pid->err[1]-pid->err[0]);	

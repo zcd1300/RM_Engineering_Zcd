@@ -124,11 +124,11 @@ void InputMode_Select(void)
 	}
 	if(RC_CtrlData.rc.switch_right == SWITCH_CENTRAL)
 	{
-		InputMode = KEYBOARD_INPUT;
+		InputMode = STOP;
 	}
 	if(RC_CtrlData.rc.switch_right == SWITCH_DOWN)
 	{
-		InputMode = STOP;
+		InputMode = KEYBOARD_INPUT;
 	}
 }
 
@@ -365,6 +365,7 @@ void StatusMachine_Update(void)
 	OperateMode_Select();	//操作模式切换，受WorkState和遥控 左侧按键 影响
 	DriverMode_Select();	//运行模式切换，受OperateMode和遥控数据影响
 	ChassisMode_Select();
+	GimbalMode_Select();
 }
 
 void StateMachine(void const* argument)
@@ -375,6 +376,10 @@ void StateMachine(void const* argument)
 	for(;;)
 	{	
 		StatusMachine_Update();
+		if(time_tick_1ms<5000)
+		{
+			time_tick_1ms++;
+		}
 		osDelayUntil(&xLastWakeTime,10/portTICK_RATE_MS);
 	}	
 }

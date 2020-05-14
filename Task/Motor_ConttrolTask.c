@@ -24,12 +24,12 @@ uint16_t GMSpeeedTest=200;
 uint8_t YAW_Initial_Angle_FLAG=0;
 uint8_t PITCH_Initial_Angle_FLAG=0;
 
-volatile float YAW_Initial_Angle=-101;	//= 
-volatile float YAW_Target_Angle=-101;
+volatile float YAW_Initial_Angle=-242;	//= 
+volatile float YAW_Target_Angle=-242;
 volatile float PITCH_Initial_Angle=185;
 volatile float PITCH_Target_Angle=185;
 
-int16_t Yaw_InitAngle_ABS=-101;				//工程云台Yaw时水平绝对角度-99 - -102之间
+int16_t Yaw_InitAngle_ABS=-242;				//工程云台Yaw时水平绝对角度-99 - -102之间
 int16_t Pitch_InitAngle_ABS=185;			//工程云台Pitch时水平绝对角度184-196之间
 
 Ramp_Init_e Yaw_Ramp_Init={-101,20,50,0,0,0};		//这里忘了那边角度是递增，具体使用等看看那边角度再写。
@@ -58,7 +58,7 @@ void GM_prepare(void)
 	Connect_PID_FUZZY(&Fuzzy_YAW_Position,&GM6020_Yaw_PositionPID,YAW_Target_Angle);
 	PID_Task(&GM6020_Yaw_PositionPID,YAW_Target_Angle,YAW_GM6020Encoder.ecd_angle);
 	Connect_PID_FUZZY(&Fuzzy_YAW_Speed,&GM6020_Yaw_SpeedPID,GM6020_Yaw_PositionPID.output);
-	PID_Task(&GM6020_Yaw_SpeedPID,GM6020_Yaw_PositionPID.output*400,YAW_GM6020Encoder.filter_rate);
+	PID_Task(&GM6020_Yaw_SpeedPID,GM6020_Yaw_PositionPID.output*40,YAW_GM6020Encoder.filter_rate);
 	//直接在输入乘以倍数可能导致难以精确控制，后期去掉，增大Kp的调节范围
 	
 
@@ -130,7 +130,7 @@ void RC_GM_Control(void)
 	YAW_Initial_Angle=YAW_Initial_Angle - ((float)RC_CtrlData.rc.Channel_3*0.0066f);
 	PITCH_Initial_Angle=PITCH_Initial_Angle - ((float)RC_CtrlData.rc.Channel_4*0.0066f);
 
-	YAW_Initial_Angle = NumRangeLimit(YAW_Initial_Angle,-165,-40);
+	YAW_Initial_Angle = NumRangeLimit(YAW_Initial_Angle,-270,-215);//-165 -40
 	PITCH_Initial_Angle = NumRangeLimit(PITCH_Initial_Angle,160,215);	
 	
 	YAW_Target_Angle = YAW_Initial_Angle;
@@ -141,7 +141,7 @@ void RC_GM_Control(void)
 	PID_Task(&GM6020_Yaw_SpeedPID,GM6020_Yaw_PositionPID.output*400,YAW_GM6020Encoder.filter_rate);
 	
 	PID_Task(&GM6020_Pitch_PositionPID,PITCH_Target_Angle,PITCH_GM6020Encoder.ecd_angle);
-	PID_Task(&GM6020_Pitch_SpeedPID,GM6020_Pitch_PositionPID.output*4,PITCH_GM6020Encoder.filter_rate);
+	PID_Task(&GM6020_Pitch_SpeedPID,GM6020_Pitch_PositionPID.output*40,PITCH_GM6020Encoder.filter_rate);
 
 	CAN1_Tx_Buff_Ext[0] = (int16_t)GM6020_Yaw_SpeedPID.output>>8;
 	CAN1_Tx_Buff_Ext[1] = (unsigned char)GM6020_Yaw_SpeedPID.output;
@@ -200,11 +200,11 @@ void GimbalMode_Switch(void)
 	{
 		case Gimbal_Prepare:
 		{
-			GM_prepare();
+//			GM_prepare();
 		}break;
 		case Gimbal_Stop:
 		{
-			GM_prepare();//云台停止，为了防止云台收不到信号疯掉，切换到准备状态
+//			GM_prepare();//云台停止，为了防止云台收不到信号疯掉，切换到准备状态
 		}break;
 		case Gimbal_RC_Mode:
 		{
@@ -212,7 +212,7 @@ void GimbalMode_Switch(void)
 		}break;
 		case Gimbal_Mouse_Mode:
 		{
-			Mouse_GM_Control();//鼠标控制还没详细测试
+//			Mouse_GM_Control();//鼠标控制还没详细测试
 		}break;
 		case Gimbal_Follow:
 		{
