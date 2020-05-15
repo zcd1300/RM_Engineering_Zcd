@@ -376,7 +376,7 @@ void StateMachine(void const* argument)
 	for(;;)
 	{	
 		StatusMachine_Update();
-		if(time_tick_1ms<5000)
+		if(time_tick_1ms<2000)
 		{
 			time_tick_1ms++;
 		}

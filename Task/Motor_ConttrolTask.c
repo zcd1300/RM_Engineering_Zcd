@@ -24,10 +24,10 @@ uint16_t GMSpeeedTest=200;
 uint8_t YAW_Initial_Angle_FLAG=0;
 uint8_t PITCH_Initial_Angle_FLAG=0;
 
-volatile float YAW_Initial_Angle=-242;	//= 
-volatile float YAW_Target_Angle=-242;
-volatile float PITCH_Initial_Angle=185;
-volatile float PITCH_Target_Angle=185;
+volatile float YAW_Initial_Angle=-101;	//= 
+volatile float YAW_Target_Angle=-101;
+volatile float PITCH_Initial_Angle=120;//185
+volatile float PITCH_Target_Angle=120;//185
 
 int16_t Yaw_InitAngle_ABS=-242;				//工程云台Yaw时水平绝对角度-99 - -102之间
 int16_t Pitch_InitAngle_ABS=185;			//工程云台Pitch时水平绝对角度184-196之间
@@ -130,8 +130,8 @@ void RC_GM_Control(void)
 	YAW_Initial_Angle=YAW_Initial_Angle - ((float)RC_CtrlData.rc.Channel_3*0.0066f);
 	PITCH_Initial_Angle=PITCH_Initial_Angle - ((float)RC_CtrlData.rc.Channel_4*0.0066f);
 
-	YAW_Initial_Angle = NumRangeLimit(YAW_Initial_Angle,-270,-215);//-165 -40
-	PITCH_Initial_Angle = NumRangeLimit(PITCH_Initial_Angle,160,215);	
+	YAW_Initial_Angle = NumRangeLimit(YAW_Initial_Angle,-165,-40);//-165 -40
+	PITCH_Initial_Angle = NumRangeLimit(PITCH_Initial_Angle,90,130);//160 215	
 	
 	YAW_Target_Angle = YAW_Initial_Angle;
 	PITCH_Target_Angle = PITCH_Initial_Angle;
@@ -143,11 +143,9 @@ void RC_GM_Control(void)
 	PID_Task(&GM6020_Pitch_PositionPID,PITCH_Target_Angle,PITCH_GM6020Encoder.ecd_angle);
 	PID_Task(&GM6020_Pitch_SpeedPID,GM6020_Pitch_PositionPID.output*4,PITCH_GM6020Encoder.filter_rate);
 
-	GM6020_Yaw_SpeedPID.output = -500;
-	GM6020_Pitch_SpeedPID.output = 0;
 	
 	CAN1_Tx_Buff_Ext[0] = (int16_t)GM6020_Yaw_SpeedPID.output>>8;
-	CAN1_Tx_Buff_Ext[1] = GM6020_Yaw_SpeedPID.output;
+	CAN1_Tx_Buff_Ext[1] = (unsigned char)GM6020_Yaw_SpeedPID.output;
 	CAN1_Tx_Buff_Ext[2] = (int16_t)GM6020_Pitch_SpeedPID.output>>8;
 	CAN1_Tx_Buff_Ext[3] = (unsigned char)GM6020_Pitch_SpeedPID.output;
 	

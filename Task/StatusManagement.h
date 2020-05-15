@@ -11,7 +11,7 @@
 #include "Remote_Driver.h"
 #include "cmsis_os.h"
 
-#define PREPARE_TIME_TICK_MS 2000
+#define PREPARE_TIME_TICK_MS 1000
 
 /*-----------------------------------------------------------------------*/
 typedef enum
