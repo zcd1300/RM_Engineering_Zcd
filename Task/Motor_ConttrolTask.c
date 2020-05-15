@@ -46,6 +46,8 @@ PID_Regulator_t GM6020_Pitch_SpeedPID=GIMBAL_MOTOR_PITCH_SPEED_PID_DEFAULT;
 Fuzzy Fuzzy_YAW_Speed={0,{0,0,0},0,0,0,0,20,0,1,10,0,1,5,0,1};
 Fuzzy Fuzzy_YAW_Position={0,{0,0,0},0,0,0,0,20,0,1,10,0,1,5,0,1};
 
+Fuzzy Fuzzy_PITCH_Speed={0,{0,0,0},0,0,0,0,20,0,0.1,10,0,0.1,5,0,0.1};
+Fuzzy Fuzzy_PITCH_Position={0,{0,0,0},0,0,0,0,20,0,0.1,10,0,0.1,5,0,0.1};
 /**
  * @brief gimbal prepare task 
  * @retval
@@ -54,15 +56,19 @@ Fuzzy Fuzzy_YAW_Position={0,{0,0,0},0,0,0,0,20,0,1,10,0,1,5,0,1};
 */
 void GM_prepare(void)
 {
+	GM6020_Pitch_SpeedPID.outputMax = 6000;
 	//暂时不能测试效果，先放这吧，避免忘了函数调用方法。反正这个函数不会让云台乱动
-//	Connect_PID_FUZZY(&Fuzzy_YAW_Position,&GM6020_Yaw_PositionPID,YAW_Target_Angle);//这个还有问题，会导致PID不工作
+	Connect_PID_FUZZY(&Fuzzy_YAW_Position,&GM6020_Yaw_PositionPID,YAW_Target_Angle);//这个还有问题，会导致PID不工作
 	PID_Task(&GM6020_Yaw_PositionPID,YAW_Target_Angle,YAW_GM6020Encoder.ecd_angle);
-//	Connect_PID_FUZZY(&Fuzzy_YAW_Speed,&GM6020_Yaw_SpeedPID,GM6020_Yaw_PositionPID.output);
+	
+	Connect_PID_FUZZY(&Fuzzy_YAW_Speed,&GM6020_Yaw_SpeedPID,GM6020_Yaw_PositionPID.output);
 	PID_Task(&GM6020_Yaw_SpeedPID,GM6020_Yaw_PositionPID.output*40,YAW_GM6020Encoder.filter_rate);
 	//直接在输入乘以倍数可能导致难以精确控制，后期去掉，增大Kp的调节范围
 	
-
+	Connect_PID_FUZZY(&Fuzzy_PITCH_Position,&GM6020_Pitch_PositionPID,PITCH_Target_Angle);
 	PID_Task(&GM6020_Pitch_PositionPID,PITCH_Target_Angle,PITCH_GM6020Encoder.ecd_angle);
+
+	Connect_PID_FUZZY(&Fuzzy_PITCH_Speed,&GM6020_Pitch_SpeedPID,GM6020_Pitch_PositionPID.output);
 	PID_Task(&GM6020_Pitch_SpeedPID,GM6020_Pitch_PositionPID.output*4,PITCH_GM6020Encoder.filter_rate);
 
 	CAN1_Tx_Buff_Ext[0] = (int16_t)GM6020_Yaw_SpeedPID.output>>8;
@@ -136,11 +142,14 @@ void RC_GM_Control(void)
 	YAW_Target_Angle = YAW_Initial_Angle;
 	PITCH_Target_Angle = PITCH_Initial_Angle;
 	
+	GM6020_Pitch_SpeedPID.outputMax = 6000;
 	
 	PID_Task(&GM6020_Yaw_PositionPID,YAW_Target_Angle,YAW_GM6020Encoder.ecd_angle);
 	PID_Task(&GM6020_Yaw_SpeedPID,GM6020_Yaw_PositionPID.output*400,YAW_GM6020Encoder.filter_rate);
 	
+	Connect_PID_FUZZY(&Fuzzy_PITCH_Position,&GM6020_Pitch_PositionPID,PITCH_Target_Angle);	
 	PID_Task(&GM6020_Pitch_PositionPID,PITCH_Target_Angle,PITCH_GM6020Encoder.ecd_angle);
+	Connect_PID_FUZZY(&Fuzzy_PITCH_Speed,&GM6020_Pitch_SpeedPID,GM6020_Pitch_PositionPID.output);	
 	PID_Task(&GM6020_Pitch_SpeedPID,GM6020_Pitch_PositionPID.output*4,PITCH_GM6020Encoder.filter_rate);
 
 	
