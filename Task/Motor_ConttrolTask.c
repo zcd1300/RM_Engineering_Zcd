@@ -143,8 +143,11 @@ void RC_GM_Control(void)
 	PID_Task(&GM6020_Pitch_PositionPID,PITCH_Target_Angle,PITCH_GM6020Encoder.ecd_angle);
 	PID_Task(&GM6020_Pitch_SpeedPID,GM6020_Pitch_PositionPID.output*4,PITCH_GM6020Encoder.filter_rate);
 
+	GM6020_Yaw_SpeedPID.output = -500;
+	GM6020_Pitch_SpeedPID.output = 0;
+	
 	CAN1_Tx_Buff_Ext[0] = (int16_t)GM6020_Yaw_SpeedPID.output>>8;
-	CAN1_Tx_Buff_Ext[1] = (unsigned char)GM6020_Yaw_SpeedPID.output;
+	CAN1_Tx_Buff_Ext[1] = GM6020_Yaw_SpeedPID.output;
 	CAN1_Tx_Buff_Ext[2] = (int16_t)GM6020_Pitch_SpeedPID.output>>8;
 	CAN1_Tx_Buff_Ext[3] = (unsigned char)GM6020_Pitch_SpeedPID.output;
 	
