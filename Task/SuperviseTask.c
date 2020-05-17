@@ -6,6 +6,8 @@
 
 uint32_t lost_err = 0;     //每一位代表一个错误
 
+uint8_t GimbalCalibrationKEY_JudgeTime =0;
+
 uint16_t DBUSFrameRate = 0;
 uint16_t DBUSFrameCounter = 0;
 
@@ -242,14 +244,17 @@ void ErrorFlagSet(void)//设置错误位
 		Set_Error_Flag(LOST_ERROR_MOTOR_YAW);
 		error_count[1]++;
 	}
-	else if(PITCHFrameRate < 200)
+	else
+	{
+		Reset_Error_Flag(LOST_ERROR_MOTOR_YAW);	
+	}
+	if(PITCHFrameRate < 200)
 	{
 		Set_Error_Flag(LOST_ERROR_MOTOR_PITCH);
 		error_count[2]++;
 	}
 	else
 	{
-		Reset_Error_Flag(LOST_ERROR_MOTOR_YAW);
 		Reset_Error_Flag(LOST_ERROR_MOTOR_PITCH);
 	}
 	//MiniPC(√)
@@ -275,14 +280,17 @@ void ErrorFlagSet(void)//设置错误位
 		Set_Error_Flag(LOST_ERROR_MOTOR_Friction_Left);
 		error_count[3]++;
 	}
-	else if(FrictionFrameRate_Right <200)
+	else
+	{
+		Reset_Error_Flag(LOST_ERROR_MOTOR_Friction_Left);	
+	}
+	if(FrictionFrameRate_Right <200)
 	{
 		Set_Error_Flag(LOST_ERROR_MOTOR_Friction_Right);
 		error_count[4]++;
 	}
 	else
 	{
-		Reset_Error_Flag(LOST_ERROR_MOTOR_Friction_Left);
 		Reset_Error_Flag(LOST_ERROR_MOTOR_Friction_Right);
 	}
 	//拨盘(√)
@@ -298,6 +306,18 @@ void ErrorFlagSet(void)//设置错误位
 }
 void ERROR_Display_LED(void)
 {
+	HAL_GPIO_WritePin(GPIOG,GPIO_PIN_1|GPIO_PIN_2|GPIO_PIN_3|GPIO_PIN_4|GPIO_PIN_5|GPIO_PIN_6|GPIO_PIN_7|GPIO_PIN_8,GPIO_PIN_SET);	
+	
+	if(lost_err != 0)
+	{
+		HAL_GPIO_WritePin(GPIOF,GPIO_PIN_14,GPIO_PIN_RESET);
+		HAL_GPIO_WritePin(GPIOE,GPIO_PIN_11,GPIO_PIN_RESET);
+	}
+	else
+	{
+		HAL_GPIO_WritePin(GPIOF,GPIO_PIN_14,GPIO_PIN_RESET);	
+		HAL_GPIO_WritePin(GPIOE,GPIO_PIN_11,GPIO_PIN_SET);	
+	}
 	if(lost_err & 0x0001)
 	{
 		HAL_GPIO_WritePin(GPIOG,GPIO_PIN_1,GPIO_PIN_RESET);//遥控器掉线
@@ -330,7 +350,50 @@ void ERROR_Display_LED(void)
 	{
 		HAL_GPIO_WritePin(GPIOG,GPIO_PIN_8,GPIO_PIN_RESET);//妙算USB发送帧率异常
 	}
-	
+
+	else if(lost_err & 0x0800)
+	{
+		HAL_GPIO_WritePin(GPIOG,GPIO_PIN_1|GPIO_PIN_5,GPIO_PIN_RESET);//CAN1发送帧率异常
+	}	
+	else if(lost_err & 0x1000)
+	{
+		HAL_GPIO_WritePin(GPIOG,GPIO_PIN_1|GPIO_PIN_6,GPIO_PIN_RESET);//CAN2发送帧率异常
+	}	
+	else if(lost_err & 0x2000)
+	{
+		HAL_GPIO_WritePin(GPIOG,GPIO_PIN_1|GPIO_PIN_3,GPIO_PIN_RESET);//CAN1接收帧率异常
+	}	
+	else if(lost_err & 0x4000)
+	{
+		HAL_GPIO_WritePin(GPIOG,GPIO_PIN_1|GPIO_PIN_4,GPIO_PIN_RESET);//CAN2接收帧率异常
+	}
+	else if(lost_err & 0x8000)
+	{
+		HAL_GPIO_WritePin(GPIOG,GPIO_PIN_1|GPIO_PIN_2,GPIO_PIN_RESET);//IMU数据异常
+	}	
+	else
+	{
+//		HAL_GPIO_WritePin(GPIOG,GPIO_PIN_1|GPIO_PIN_2|GPIO_PIN_3|GPIO_PIN_4|GPIO_PIN_5|GPIO_PIN_6|GPIO_PIN_7|GPIO_PIN_8,GPIO_PIN_SET);	
+	}
+}
+
+
+//-----------------------------------------------------云台校准模式切换
+void GimbalCalibrationKEY_Judge(void)
+{
+	if(HAL_GPIO_ReadPin(GPIOB,GPIO_PIN_2) == GPIO_PIN_SET)
+	{
+		GimbalCalibrationKEY_JudgeTime++;	
+	}
+	else
+	{
+		GimbalCalibrationKEY_JudgeTime = 0;
+	}
+	if(GimbalCalibrationKEY_JudgeTime >= 4)//长按2s切换
+	{
+		
+		
+	}
 }
 /*
 void BeepForError(void)
@@ -385,6 +448,8 @@ void Supervise(void const * argument)
 	for(;;)
 	{
 		Task_Monitor();	
+		ERROR_Display_LED();
+		GimbalCalibrationKEY_Judge();
 		osDelayUntil(&xLastWakeTime,500/portTICK_RATE_MS);//运行间隔0.5s
 	}
 }

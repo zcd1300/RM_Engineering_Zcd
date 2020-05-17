@@ -347,7 +347,7 @@ void FrictionMode_Select(void)
 
 
 //------------------------------------------状态机初始化
-void StatusMachine_Init(void)//目前还没被调用，在上电时应该被调用。在切会prepare时也应该调用
+void StatusMachine_Init(void)//目前还没被调用，在上电时应该被调用。在切回prepare时也应该调用
 {
 	WorkState = PREPARE_STATE;
 	AutoMovement = Auto_NoMovement;

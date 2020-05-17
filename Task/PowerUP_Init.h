@@ -21,7 +21,7 @@ typedef struct
 	
 }GimbalOffset_SAVE;
 
-
+void LED_GPIO_Init(void);
 
 
 #endif
