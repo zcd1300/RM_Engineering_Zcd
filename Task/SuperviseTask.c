@@ -2,6 +2,7 @@
 #include "SuperviseTask.h"
 #include "cmsis_os.h"
 #include "task.h"
+#include "gpio.h"
 
 uint32_t lost_err = 0;     //每一位代表一个错误
 
@@ -39,7 +40,7 @@ uint16_t MiniPCFrameRate_USBTx = 0;
 uint16_t MiniPCFrameCounter_USBTx = 0;
 
 osThreadId SuperviseHandle;
-//uint32_t lost_counter[40] = {0};		//看门狗计数(这个好像没用到,先注释掉了)
+//uint32_t lost_counter[40] = {0};		//看门狗计数(这个现在没用到,先注释掉了)
 //uint32_t test_count[7] = {0};
 
 uint32_t error_count[16] = {0};
@@ -295,7 +296,42 @@ void ErrorFlagSet(void)//设置错误位
 		Reset_Error_Flag(LOST_ERROR_MOTOR_BulltePlate);
 	}
 }
-
+void ERROR_Display_LED(void)
+{
+	if(lost_err & 0x0001)
+	{
+		HAL_GPIO_WritePin(GPIOG,GPIO_PIN_1,GPIO_PIN_RESET);//遥控器掉线
+	}
+	else if(lost_err & 0x0002)
+	{
+		HAL_GPIO_WritePin(GPIOG,GPIO_PIN_2,GPIO_PIN_RESET);//YAW电机掉线
+	}
+	else if(lost_err & 0x0004)
+	{
+		HAL_GPIO_WritePin(GPIOG,GPIO_PIN_3,GPIO_PIN_RESET);//PITCH电机掉线
+	}
+	else if(lost_err & 0x0008)
+	{
+		HAL_GPIO_WritePin(GPIOG,GPIO_PIN_4,GPIO_PIN_RESET);//左侧摩擦轮掉线
+	}
+	else if(lost_err & 0x0010)
+	{
+		HAL_GPIO_WritePin(GPIOG,GPIO_PIN_5,GPIO_PIN_RESET);//右侧摩擦轮掉线
+	}
+	else if(lost_err & 0x0020)
+	{
+		HAL_GPIO_WritePin(GPIOG,GPIO_PIN_6,GPIO_PIN_RESET);//拨盘电机掉线
+	}
+	else if(lost_err & 0x0040)
+	{
+		HAL_GPIO_WritePin(GPIOG,GPIO_PIN_7,GPIO_PIN_RESET);//妙算USB接收帧率异常
+	}
+	else if(lost_err & 0x0080)
+	{
+		HAL_GPIO_WritePin(GPIOG,GPIO_PIN_8,GPIO_PIN_RESET);//妙算USB发送帧率异常
+	}
+	
+}
 /*
 void BeepForError(void)
 {
