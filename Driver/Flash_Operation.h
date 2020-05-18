@@ -11,6 +11,9 @@
 
 #include "stdint.h"
 
+#define FlashWrite_Lenth sizeof(FlashWrite_Buff)
+#define FlashWrite_Size FlashWrite_Lenth/4 + ((FlashWrite_Lenth%4)?1:0)
+
 //------------------Bank1---------------------//
 #define ADDR_Flash_Sector_0 0x08000000	//16k
 #define ADDR_Flash_Sector_1 0x08004000	//16k
@@ -49,6 +52,8 @@ extern uint32_t Sector_ERROR;
 extern uint8_t Erase_ERROR;
 extern uint8_t Write_ERROR;
 extern uint8_t WriteADDR_Start_ERROR;
+
+extern uint8_t FlashWrite_Buff[5];
 //-------------------------------------------//
 
 

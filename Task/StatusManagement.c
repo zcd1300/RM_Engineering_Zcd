@@ -21,6 +21,8 @@ Chassis_MoveMode_t Move_Mode;
 
 uint32_t time_tick_1ms=0;
 uint8_t GimbalCalibration_Flag=0;
+uint8_t GimbalCalibrationKEY_JudgeTime =0;
+uint8_t Gimbal_Debug_Flag=0;
 
 //函数未完成
 static void WorkstateInit(void)
@@ -258,31 +260,37 @@ void AttackMode_Select(void)
 //------------------------------------------云台状态
 void GimbalMode_Select(void)
 {
-	switch(WorkState)
+	if(Gimbal_Debug_Flag == 1)
 	{
-		case PREPARE_STATE:
-		{
-			Gimbal_Mode = Gimbal_Prepare;
-		}break;
-		case NORMAL_RC_STATE:
-		{
-			Gimbal_Mode = Gimbal_RC_Mode;
-		}break;
-		case KEYBOARD_RC_STATE:
-		{
-			Gimbal_Mode = Gimbal_Mouse_Mode;
-		}break;
-		case STOP_STATE:
-		{
-			Gimbal_Mode = Gimbal_Stop;
-		}break;
-		default:
-		{
-			Gimbal_Mode = Gimbal_Stop;
-		}
-	
+		Gimbal_Mode = Gimbal_Debug;
 	}
-
+	else
+	{
+		switch(WorkState)
+		{
+			case PREPARE_STATE:
+			{
+				Gimbal_Mode = Gimbal_Prepare;
+			}break;
+			case NORMAL_RC_STATE:
+			{
+				Gimbal_Mode = Gimbal_RC_Mode;
+			}break;
+			case KEYBOARD_RC_STATE:
+			{
+				Gimbal_Mode = Gimbal_Mouse_Mode;
+			}break;
+			case STOP_STATE:
+			{
+				Gimbal_Mode = Gimbal_Stop;
+			}break;
+			default:
+			{
+				Gimbal_Mode = Gimbal_Stop;
+			}
+		
+		}
+	}
 }
 
 //------------------------------------------底盘状态(√)
@@ -345,7 +353,28 @@ void FrictionMode_Select(void)
 //------------------------------------------拨盘状态先空着吧，这个的状态切换函数可能需要单独写
 
 
-
+//-----------------------------------------------------云台校准模式切换
+void GimbalCalibrationKEY_Judge(void)
+{
+	if(HAL_GPIO_ReadPin(GPIOB,GPIO_PIN_2) == GPIO_PIN_SET && GimbalCalibrationKEY_JudgeTime < 210)
+	{
+		GimbalCalibrationKEY_JudgeTime++;	
+	}
+	else
+	{
+		GimbalCalibrationKEY_JudgeTime = 0;
+	}
+	if(GimbalCalibrationKEY_JudgeTime >= 200 && Gimbal_Mode == Gimbal_Stop)//长按2s切换
+	{
+		Gimbal_Mode = Gimbal_Debug;
+		Gimbal_Debug_Flag = 1;
+	}
+	else if(GimbalCalibrationKEY_JudgeTime >= 200 && Gimbal_Mode == Gimbal_Prepare)
+	{
+		Gimbal_Mode = Gimbal_Debug;
+		Gimbal_Debug_Flag = 1;
+	}
+}
 //------------------------------------------状态机初始化
 void StatusMachine_Init(void)//目前还没被调用，在上电时应该被调用。在切回prepare时也应该调用
 {
@@ -376,6 +405,7 @@ void StateMachine(void const* argument)
 	for(;;)
 	{	
 		StatusMachine_Update();
+		GimbalCalibrationKEY_Judge();
 		if(time_tick_1ms<2000)
 		{
 			time_tick_1ms++;
@@ -392,6 +422,6 @@ void StateMachineThreadCreate(osPriority taskPriority)
 }
 
 /**
-  @CompletionTime 2020 5 6
+  @CompletionTime 2020 5 18
 */
 

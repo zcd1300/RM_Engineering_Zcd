@@ -82,6 +82,7 @@ extern Gimbal_MoveMode_t Gimbal_Mode;
 
 extern uint8_t GimbalCalibration_Flag;
 extern uint32_t time_tick_1ms;
+extern uint8_t Gimbal_Debug_Flag;
 
 void StatusMachine_Init(void);
 InputMode_e GetInputMode(void);

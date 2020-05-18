@@ -6,7 +6,6 @@
 
 uint32_t lost_err = 0;     //每一位代表一个错误
 
-uint8_t GimbalCalibrationKEY_JudgeTime =0;
 
 uint16_t DBUSFrameRate = 0;
 uint16_t DBUSFrameCounter = 0;
@@ -378,23 +377,7 @@ void ERROR_Display_LED(void)
 }
 
 
-//-----------------------------------------------------云台校准模式切换
-void GimbalCalibrationKEY_Judge(void)
-{
-	if(HAL_GPIO_ReadPin(GPIOB,GPIO_PIN_2) == GPIO_PIN_SET)
-	{
-		GimbalCalibrationKEY_JudgeTime++;	
-	}
-	else
-	{
-		GimbalCalibrationKEY_JudgeTime = 0;
-	}
-	if(GimbalCalibrationKEY_JudgeTime >= 4)//长按2s切换
-	{
-		
-		
-	}
-}
+
 /*
 void BeepForError(void)
 {
@@ -449,7 +432,6 @@ void Supervise(void const * argument)
 	{
 		Task_Monitor();	
 		ERROR_Display_LED();
-		GimbalCalibrationKEY_Judge();
 		osDelayUntil(&xLastWakeTime,500/portTICK_RATE_MS);//运行间隔0.5s
 	}
 }

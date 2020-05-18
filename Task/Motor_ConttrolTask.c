@@ -15,9 +15,12 @@
 #include "User_Math.h"
 #include "Fuzzy_Controller.h"
 #include "StatusManagement.h"
+#include "Flash_Operation.h"
 //#include "Friction.h"
 //#include "usart.h"
 //#include "XDU_USB_HID_Z.h"
+
+#define Gimbal_Flash_SaveAddr 0X08080000 		//Sector8
 
 
 uint16_t GMSpeeedTest=200;
@@ -197,6 +200,34 @@ void Mouse_GM_Control(void)//尚未测试完善
 	CAN1_Send(CAN1_Tx_Buff_Ext,0x1FF);
 }
 
+	
+/**
+ * @brief  Gimbal calibration
+ * @retval	void
+ * @ZCD
+ * @Time 2020 5 18 
+*/
+void GimbalCalibration_Control(void)
+{
+	CAN1_Tx_Buff_Ext[0] = 0;
+	CAN1_Tx_Buff_Ext[1] = 0;
+	CAN1_Tx_Buff_Ext[2] = 0;
+	CAN1_Tx_Buff_Ext[3] = 0;	
+	CAN1_Send(CAN1_Tx_Buff_Ext,0x1FF);//电机停止输出
+	
+	FlashWrite_Buff[0] = 0x0A;//云台已经校准标志
+	FlashWrite_Buff[1] = (int16_t)YAW_GM6020Encoder.ecd_angle>>8;
+	FlashWrite_Buff[2] = (int16_t)YAW_GM6020Encoder.ecd_angle;//YAW校准值
+	
+	FlashWrite_Buff[3] = (int16_t)PITCH_GM6020Encoder.ecd_angle>>8;
+	FlashWrite_Buff[4] = (int16_t)PITCH_GM6020Encoder.ecd_angle;//PITCH校准值
+	
+	Flash_Write(Gimbal_Flash_SaveAddr,FlashWrite_Size,(uint32_t *)FlashWrite_Buff); 
+	YAW_Initial_Angle = YAW_GM6020Encoder.ecd_angle;
+	PITCH_Initial_Angle = PITCH_GM6020Encoder.ecd_angle;
+	//云台切换到准备模式并初始化
+}
+
 /**
  * @brief  Gimbal State switch
  * @param void
@@ -231,7 +262,7 @@ void GimbalMode_Switch(void)
 		case Gimbal_Debug:
 		{
 		//云台校准、可以对应LED闪烁
-			
+			GimbalCalibration_Control();
 		}break;
 		default:
 		{
@@ -239,7 +270,7 @@ void GimbalMode_Switch(void)
 		}break;
 	}
 }
-	
+
 
 void MOTOR_CONTROL(void const* argument)
 {

@@ -22,6 +22,11 @@ uint8_t WriteADDR_Start_ERROR=0;
 HAL_StatusTypeDef FlashStatus;
 FLASH_EraseInitTypeDef FlashErase_Init;
 
+uint8_t FlashWrite_Buff[5] = {0,\
+							 0,0,\
+							 0,0};//{已校准标志、YAW初始值、PITCH初始值}
+
+
 /**
  * @brief Read specified address data (32bit width)
  * @param address: Read_Addr
