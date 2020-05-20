@@ -207,6 +207,8 @@ void Mouse_GM_Control(void)//尚未测试完善
  * @ZCD
  * @Time 2020 5 18 
 */
+uint16_t GimbalCalibrationKEY_ExitTime = 0;
+uint16_t GimbalCalibrationLED_Disp = 0;
 void GimbalCalibration_Control(void)
 {
 	CAN1_Tx_Buff_Ext[0] = 0;
@@ -214,6 +216,7 @@ void GimbalCalibration_Control(void)
 	CAN1_Tx_Buff_Ext[2] = 0;
 	CAN1_Tx_Buff_Ext[3] = 0;	
 	CAN1_Send(CAN1_Tx_Buff_Ext,0x1FF);//电机停止输出
+	GimbalCalibrationLED_Disp++;//这个变量用来实现对应的LED闪烁
 	
 	FlashWrite_Buff[0] = 0x0A;//云台已经校准标志
 	FlashWrite_Buff[1] = (int16_t)YAW_GM6020Encoder.ecd_angle>>8;
@@ -222,10 +225,30 @@ void GimbalCalibration_Control(void)
 	FlashWrite_Buff[3] = (int16_t)PITCH_GM6020Encoder.ecd_angle>>8;
 	FlashWrite_Buff[4] = (int16_t)PITCH_GM6020Encoder.ecd_angle;//PITCH校准值
 	
-	Flash_Write(Gimbal_Flash_SaveAddr,FlashWrite_Size,(uint32_t *)FlashWrite_Buff); 
-	YAW_Initial_Angle = YAW_GM6020Encoder.ecd_angle;
-	PITCH_Initial_Angle = PITCH_GM6020Encoder.ecd_angle;
-	//云台切换到准备模式并初始化
+	if(((GimbalCalibrationLED_Disp%50)?0:1))
+	{
+		HAL_GPIO_TogglePin(GPIOE,GPIO_PIN_11);
+		HAL_GPIO_TogglePin(GPIOF,GPIO_PIN_14);		
+	}
+	if(HAL_GPIO_ReadPin(GPIOB,GPIO_PIN_2) == GPIO_PIN_SET)
+	{
+		GimbalCalibrationKEY_ExitTime++;
+	}
+	if(GimbalCalibrationKEY_ExitTime>600)
+	{
+		Flash_Write(Gimbal_Flash_SaveAddr,FlashWrite_Size,(uint32_t *)FlashWrite_Buff); 
+		YAW_Initial_Angle = YAW_GM6020Encoder.ecd_angle;
+		PITCH_Initial_Angle = PITCH_GM6020Encoder.ecd_angle;
+		GimbalCalibrationKEY_ExitTime = 0 ;
+		//这里要云台切换到准备模式并初始化	
+
+		HAL_GPIO_WritePin(GPIOE,GPIO_PIN_11,GPIO_PIN_RESET);	
+		HAL_GPIO_WritePin(GPIOF,GPIO_PIN_14,GPIO_PIN_RESET);	
+		HAL_Delay(1000);
+		HAL_GPIO_WritePin(GPIOE,GPIO_PIN_11,GPIO_PIN_SET);
+		Gimbal_Debug_Flag = 0;	//校准状态释放
+	}
+
 }
 
 /**
