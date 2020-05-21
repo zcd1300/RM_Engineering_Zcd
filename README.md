@@ -134,7 +134,7 @@ void State_Update(void)
 void OperateMode_Select(void)
 ~~~
 
-* **Spuervise还没有对应的错误显示函数（原来的是用蜂鸣器）**
+* ~~Spuervise还没有对应的错误显示函数（原来的是用蜂鸣器）~~
 
 ## 已知的逻辑冲突、错误
 
