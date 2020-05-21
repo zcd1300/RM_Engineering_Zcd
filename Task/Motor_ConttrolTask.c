@@ -209,6 +209,7 @@ void Mouse_GM_Control(void)//尚未测试完善
 */
 uint16_t GimbalCalibrationKEY_ExitTime = 0;
 uint16_t GimbalCalibrationLED_Disp = 0;
+uint8_t GimbalCalibrationLED_DispInitFlag = 0;
 void GimbalCalibration_Control(void)
 {
 	CAN1_Tx_Buff_Ext[0] = 0;
@@ -224,7 +225,12 @@ void GimbalCalibration_Control(void)
 	
 	FlashWrite_Buff[3] = (int16_t)PITCH_GM6020Encoder.ecd_angle>>8;
 	FlashWrite_Buff[4] = (int16_t)PITCH_GM6020Encoder.ecd_angle;//PITCH校准值
-	
+	if(GimbalCalibrationLED_DispInitFlag == 0)
+	{
+		HAL_GPIO_WritePin(GPIOE,GPIO_PIN_11,GPIO_PIN_RESET);	
+		HAL_GPIO_WritePin(GPIOF,GPIO_PIN_14,GPIO_PIN_SET);	
+		GimbalCalibrationLED_DispInitFlag = 1;
+	}
 	if(((GimbalCalibrationLED_Disp%50)?0:1))
 	{
 		HAL_GPIO_TogglePin(GPIOE,GPIO_PIN_11);
@@ -247,6 +253,7 @@ void GimbalCalibration_Control(void)
 		HAL_Delay(1000);
 		HAL_GPIO_WritePin(GPIOE,GPIO_PIN_11,GPIO_PIN_SET);
 		Gimbal_Debug_Flag = 0;	//校准状态释放
+		GimbalCalibrationLED_DispInitFlag = 0;
 	}
 
 }

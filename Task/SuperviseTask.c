@@ -3,6 +3,7 @@
 #include "cmsis_os.h"
 #include "task.h"
 #include "gpio.h"
+#include "StatusManagement.h"
 
 uint32_t lost_err = 0;     //每一位代表一个错误
 
@@ -307,16 +308,20 @@ void ERROR_Display_LED(void)
 {
 	HAL_GPIO_WritePin(GPIOG,GPIO_PIN_1|GPIO_PIN_2|GPIO_PIN_3|GPIO_PIN_4|GPIO_PIN_5|GPIO_PIN_6|GPIO_PIN_7|GPIO_PIN_8,GPIO_PIN_SET);	
 	
-	if(lost_err != 0)
+	if(Gimbal_Debug_Flag == 0)
 	{
-		HAL_GPIO_WritePin(GPIOF,GPIO_PIN_14,GPIO_PIN_RESET);
-		HAL_GPIO_WritePin(GPIOE,GPIO_PIN_11,GPIO_PIN_RESET);
+		if(lost_err != 0)
+		{
+			HAL_GPIO_WritePin(GPIOF,GPIO_PIN_14,GPIO_PIN_RESET);
+			HAL_GPIO_WritePin(GPIOE,GPIO_PIN_11,GPIO_PIN_RESET);
+		}
+		else
+		{
+			HAL_GPIO_WritePin(GPIOF,GPIO_PIN_14,GPIO_PIN_RESET);	
+			HAL_GPIO_WritePin(GPIOE,GPIO_PIN_11,GPIO_PIN_SET);	
+		}
 	}
-	else
-	{
-		HAL_GPIO_WritePin(GPIOF,GPIO_PIN_14,GPIO_PIN_RESET);	
-		HAL_GPIO_WritePin(GPIOE,GPIO_PIN_11,GPIO_PIN_SET);	
-	}
+//---左侧8个led	
 	if(lost_err & 0x0001)
 	{
 		HAL_GPIO_WritePin(GPIOG,GPIO_PIN_1,GPIO_PIN_RESET);//遥控器掉线
