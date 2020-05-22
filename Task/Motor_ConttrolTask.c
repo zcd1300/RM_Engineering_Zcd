@@ -20,7 +20,7 @@
 //#include "usart.h"
 //#include "XDU_USB_HID_Z.h"
 
-#define Gimbal_Flash_SaveAddr 0X08080000 		//Sector8
+
 
 
 uint16_t GMSpeeedTest=200;
@@ -205,11 +205,14 @@ void Mouse_GM_Control(void)//尚未测试完善
  * @brief  Gimbal calibration
  * @retval	void
  * @ZCD
- * @Time 2020 5 18 
+ * @Time 2020 5 20 //单身狗日记：5.20 晴 今天很不开心，空间、朋友圈里都是秀恩爱的。我只能一个人这搬砖。
 */
 uint16_t GimbalCalibrationKEY_ExitTime = 0;
 uint16_t GimbalCalibrationLED_Disp = 0;
 uint8_t GimbalCalibrationLED_DispInitFlag = 0;
+
+// const uint8_t FlashWrite_Buff3[]={"1234567890"};
+
 void GimbalCalibration_Control(void)
 {
 	CAN1_Tx_Buff_Ext[0] = 0;
@@ -219,7 +222,7 @@ void GimbalCalibration_Control(void)
 	CAN1_Send(CAN1_Tx_Buff_Ext,0x1FF);//电机停止输出
 	GimbalCalibrationLED_Disp++;//这个变量用来实现对应的LED闪烁
 	
-	FlashWrite_Buff[0] = 0x0A;//云台已经校准标志
+	FlashWrite_Buff[0] = 0xaa;//云台已经校准标志
 	FlashWrite_Buff[1] = (int16_t)YAW_GM6020Encoder.ecd_angle>>8;
 	FlashWrite_Buff[2] = (int16_t)YAW_GM6020Encoder.ecd_angle;//YAW校准值
 	
@@ -242,18 +245,27 @@ void GimbalCalibration_Control(void)
 	}
 	if(GimbalCalibrationKEY_ExitTime>600)
 	{
-		Flash_Write(Gimbal_Flash_SaveAddr,FlashWrite_Size,(uint32_t *)FlashWrite_Buff); 
+		GimbalCalibrationLED_DispInitFlag = 0;	
 		YAW_Initial_Angle = YAW_GM6020Encoder.ecd_angle;
 		PITCH_Initial_Angle = PITCH_GM6020Encoder.ecd_angle;
-		GimbalCalibrationKEY_ExitTime = 0 ;
+
+		//vTaskSuspendAll();
+
+		Flash_Write(Gimbal_Flash_SaveAddr,2,(uint32_t*)FlashWrite_Buff); 
+
+		//xTaskResumeAll();
+		
 		//这里要云台切换到准备模式并初始化	
 
 		HAL_GPIO_WritePin(GPIOE,GPIO_PIN_11,GPIO_PIN_RESET);	
 		HAL_GPIO_WritePin(GPIOF,GPIO_PIN_14,GPIO_PIN_RESET);	
-		HAL_Delay(1000);
+		HAL_Delay(500);
 		HAL_GPIO_WritePin(GPIOE,GPIO_PIN_11,GPIO_PIN_SET);
+		HAL_GPIO_WritePin(GPIOF,GPIO_PIN_14,GPIO_PIN_SET);
+		HAL_Delay(1000);
+
+		GimbalCalibrationKEY_ExitTime = 0 ;			
 		Gimbal_Debug_Flag = 0;	//校准状态释放
-		GimbalCalibrationLED_DispInitFlag = 0;
 	}
 
 }
@@ -309,6 +321,7 @@ void MOTOR_CONTROL(void const* argument)
 	for(;;)
 	{	
 		GimbalMode_Switch();
+
 		osDelayUntil(&xLastWakeTime,5/portTICK_RATE_MS);
 	}
 }
@@ -319,6 +332,6 @@ void Motor_ControlThraedCreate (osPriority taskPriority)
 {
 	osThreadDef(Motor_ControlThread,MOTOR_CONTROL,taskPriority,0,256);
 	Motor_ControlHandle=osThreadCreate(osThread(Motor_ControlThread),NULL);
-
+//	vTaskPrioritySet(Motor_ControlHandle,taskPriority);
 }
 

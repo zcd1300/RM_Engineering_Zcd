@@ -374,6 +374,7 @@ void GimbalCalibrationKEY_Judge(void)
 		Gimbal_Mode = Gimbal_Debug;
 		Gimbal_Debug_Flag = 1;
 	}
+
 }
 //------------------------------------------状态机初始化
 void StatusMachine_Init(void)//目前还没被调用，在上电时应该被调用。在切回prepare时也应该调用
@@ -405,7 +406,9 @@ void StateMachine(void const* argument)
 	for(;;)
 	{	
 		StatusMachine_Update();
+
 		GimbalCalibrationKEY_Judge();
+
 		if(time_tick_1ms<2000)
 		{
 			time_tick_1ms++;

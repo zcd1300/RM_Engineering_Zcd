@@ -5,6 +5,7 @@
  * @author ZCD
  * @Time 2020 4 12 
 */
+
 #include "stm32f4xx_hal.h"
 #include "stm32_hal_legacy.h"
 #include "stm32f4xx_hal_flash.h"
@@ -149,10 +150,13 @@ void Flash_Write(uint32_t WriteAddr,\
 	Addr_Start = WriteAddr;
 	Addr_END = WriteAddr+Num_of_Write*4;
 	HAL_FLASH_Unlock();
+	__HAL_FLASH_DATA_CACHE_DISABLE();//FLASH擦除期间,必须禁止数据缓存
+
     if(Addr_Start<0x1fff0000)
 	{
 		while(Addr_Start<Addr_END)
 		{
+			FLASH_WaitForLastOperation(50000);
 			if(Flash_ReadWord(Addr_Start)!=0xFFFFFFFF)
 			{
 				FlashErase_Init.TypeErase = FLASH_TYPEERASE_SECTORS;
@@ -169,12 +173,10 @@ void Flash_Write(uint32_t WriteAddr,\
 			{
 				Addr_Start+=4;
 			}
-			//FLASH_WaitForLastOperation(HAL_FLASH_TIMEOUT_VALUE);
+		//	FLASH_WaitForLastOperation(50000);
 		}
-		
-		
 	}
-//	FlashStatus = FLASH_WaitForLastOperation();
+	FlashStatus = FLASH_WaitForLastOperation(50000);
 	if(FlashStatus == HAL_OK)
 	{
 		while(WriteAddr<Addr_END)
@@ -189,6 +191,8 @@ void Flash_Write(uint32_t WriteAddr,\
 		}
 		
 	}
+	
+	__HAL_FLASH_DATA_CACHE_ENABLE();	//FLASH擦除结束,开启数据缓存
 	HAL_FLASH_Lock();
 }
 

@@ -13,16 +13,16 @@
 #include "Flash_Operation.h"
 
 //---------------------------------//
-typedef struct
-{
-	uint16_t YAW_Angle_OFFSET;
-	uint16_t PITCH_Angle_OFFSET;
-	uint16_t InitFlag;
-	
-}GimbalOffset_SAVE;
+//typedef struct
+//{
+//	uint16_t YAW_Angle_OFFSET;
+//	uint16_t PITCH_Angle_OFFSET;
+//	uint16_t InitFlag;
+//	
+//}GimbalOffset_SAVE;
 
 void LED_GPIO_Init(void);
-
+void PowerUP_Init(void);
 
 #endif
 
