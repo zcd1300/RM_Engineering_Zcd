@@ -17,8 +17,8 @@
 //GimbalOffset_SAVE Gimbal_Init={0,0,0};
 uint8_t GimbalCalibrationState_ReadTemp [5];
 
-	int16_t YAW_ReadTEMP=0;
-	int16_t PITCH_ReadTEMP=0;
+int16_t YAW_ReadTEMP=0;
+int16_t PITCH_ReadTEMP=0;
 
 /**
  * @brief  上电后LED操作，主要是用来检查有没有坏掉的LED，以及提示开机
@@ -79,9 +79,14 @@ void GimbalCalibrationState_Judge(void)
 	{
 		Gimbal_Debug_Flag = 1;
 	}
-	if(YAW_ReadTEMP ==0 && PITCH_ReadTEMP == 0)//yaw和pitch同时为0的概率很小，应该可以作为判断标准
+	else if(YAW_ReadTEMP ==0 && PITCH_ReadTEMP == 0)//yaw和pitch同时为0的概率很小，应该可以作为判断标准
 	{
 		Gimbal_Debug_Flag = 1;	
+	}
+	else
+	{
+		YAW_Initial_Angle = YAW_ReadTEMP;
+		PITCH_Initial_Angle = PITCH_ReadTEMP;	
 	}
 	
 }

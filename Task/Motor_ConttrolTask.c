@@ -22,8 +22,6 @@
 //#include "XDU_USB_HID_Z.h"
 
 
-
-uint16_t GMSpeeedTest=200;
 uint8_t YAW_Initial_Angle_FLAG=0;
 uint8_t PITCH_Initial_Angle_FLAG=0;
 
@@ -33,13 +31,8 @@ volatile float PITCH_Initial_Angle=120;//185
 volatile float YAW_Target_Angle=-101;
 volatile float PITCH_Target_Angle=120;//185
 
-
-//int16_t Yaw_InitAngle_ABS=-242;				//工程云台Yaw时水平绝对角度-99 - -102之间
-//int16_t Pitch_InitAngle_ABS=185;			//工程云台Pitch时水平绝对角度184-196之间
-
 Ramp_Init_e Yaw_Ramp_Init={-101,20,50,0,0,0};		//这里忘了那边角度是递增，具体使用等看看那边角度再写。
 Ramp_Init_e Pitch_Ramp_Init={-101,20,50,0,0,0};
-
 
 PID_Regulator_t GM6020_Yaw_PositionPID = GIMBAL_MOTOR_YAW_POSITION_PID_DEFAULT;
 PID_Regulator_t GM6020_Yaw_SpeedPID =GIMBAL_MOTOR_YAW_SPEED_PID_DEFAULT;
@@ -53,6 +46,8 @@ Fuzzy Fuzzy_YAW_Position={0,{0,0,0},0,0,0,0,20,0,1,10,0,1,5,0,1};
 
 Fuzzy Fuzzy_PITCH_Speed={0,{0,0,0},0,0,0,0,20,0,0.1,10,0,0.1,5,0,0.1};
 Fuzzy Fuzzy_PITCH_Position={0,{0,0,0},0,0,0,0,20,0,0.1,10,0,0.1,5,0,0.1};
+
+
 /**
  * @brief gimbal prepare task 
  * @retval
@@ -62,7 +57,7 @@ Fuzzy Fuzzy_PITCH_Position={0,{0,0,0},0,0,0,0,20,0,0.1,10,0,0.1,5,0,0.1};
 void GM_prepare(void)
 {	
 	
-	GM6020_Pitch_SpeedPID.outputMax = 6000;
+	GM6020_Pitch_SpeedPID.outputMax = 6000;//----------临时调整下最大输出值，调试用
 	//暂时不能测试效果，先放这吧，避免忘了函数调用方法。反正这个函数不会让云台乱动
 	Connect_PID_FUZZY(&Fuzzy_YAW_Position,&GM6020_Yaw_PositionPID,YAW_Target_Angle);//这个还有问题，会导致PID不工作
 	PID_Task(&GM6020_Yaw_PositionPID,YAW_Target_Angle,YAW_GM6020Encoder.ecd_angle);
@@ -94,8 +89,8 @@ void GM_prepare(void)
 void Vision_GMMoto_Control(void)
 {
 	
-	YAW_Target_Angle = NumRangeLimit(USB_Vision_Decoding.YAW_ChangeAngle-165,-165,-40);
-	PITCH_Target_Angle = NumRangeLimit((-1*USB_Vision_Decoding.PITCH_ChangeAngle)+160,160,215);
+	YAW_Target_Angle = NumRangeLimit(USB_Vision_Decoding.YAW_ChangeAngle+YAW_Initial_Angle-60,YAW_Initial_Angle-60,YAW_Initial_Angle+60);
+	PITCH_Target_Angle = NumRangeLimit((-1*USB_Vision_Decoding.PITCH_ChangeAngle)+PITCH_Initial_Angle-30,PITCH_Initial_Angle-30,PITCH_Initial_Angle+10);
 /*
 //	GM6020_Yaw_PositionPID.kp=1;
 //	GM6020_Yaw_PositionPID.ki=0.02;
@@ -109,7 +104,6 @@ void Vision_GMMoto_Control(void)
 	PID_Task(&GM6020_Yaw_PositionPID,YAW_Target_Angle,YAW_GM6020Encoder.ecd_angle);
 	PID_Task(&GM6020_Yaw_SpeedPID,GM6020_Yaw_PositionPID.output*200,YAW_GM6020Encoder.filter_rate);
 
-//	PID_Task(&GM6020_Pitch_PositionPID,193,PITCH_GM6020Encoder.ecd_angle);
 	PID_Task(&GM6020_Pitch_PositionPID,PITCH_Target_Angle,PITCH_GM6020Encoder.ecd_angle);
 	PID_Task(&GM6020_Pitch_SpeedPID,GM6020_Pitch_PositionPID.output*8,PITCH_GM6020Encoder.filter_rate);
 	
@@ -142,13 +136,13 @@ void RC_GM_Control(void)
 	YAW_Initial_Angle=YAW_Initial_Angle - ((float)RC_CtrlData.rc.Channel_3*0.0066f);
 	PITCH_Initial_Angle=PITCH_Initial_Angle - ((float)RC_CtrlData.rc.Channel_4*0.0066f);
 
-	YAW_Initial_Angle = NumRangeLimit(YAW_Initial_Angle,-165,-40);//-165 -40
-	PITCH_Initial_Angle = NumRangeLimit(PITCH_Initial_Angle,90,130);//160 215	
+	YAW_Initial_Angle = NumRangeLimit(YAW_Initial_Angle,YAW_Initial_Angle-60,YAW_Initial_Angle+60);//最大YAW角度范围限位
+	PITCH_Initial_Angle = NumRangeLimit(PITCH_Initial_Angle,PITCH_Initial_Angle-30,PITCH_Initial_Angle+10);//最大PITCH角度范围限位	
 	
 	YAW_Target_Angle = YAW_Initial_Angle;
 	PITCH_Target_Angle = PITCH_Initial_Angle;
 	
-	GM6020_Pitch_SpeedPID.outputMax = 6000;
+	GM6020_Pitch_SpeedPID.outputMax = 6000;//----------临时调整下最大输出值。调试用
 	
 	PID_Task(&GM6020_Yaw_PositionPID,YAW_Target_Angle,YAW_GM6020Encoder.ecd_angle);
 	PID_Task(&GM6020_Yaw_SpeedPID,GM6020_Yaw_PositionPID.output*400,YAW_GM6020Encoder.filter_rate);
@@ -186,8 +180,8 @@ void Mouse_GM_Control(void)//尚未测试完善
 	YAW_Target_Angle = YAW_Initial_Angle + RC_CtrlData.mouse.x/16;
 	PITCH_Target_Angle = PITCH_Initial_Angle - RC_CtrlData.mouse.y/16;
 
-	YAW_Target_Angle = NumRangeLimit(YAW_Target_Angle,-165,-40);
-	PITCH_Target_Angle = NumRangeLimit(PITCH_Target_Angle,160,215);	
+	YAW_Target_Angle = NumRangeLimit(YAW_Target_Angle,YAW_Initial_Angle-60,YAW_Initial_Angle+60);
+	PITCH_Target_Angle = NumRangeLimit(PITCH_Target_Angle,PITCH_Initial_Angle-30,PITCH_Initial_Angle+10);	
 	
 	PID_Task(&GM6020_Yaw_PositionPID,YAW_Target_Angle,YAW_GM6020Encoder.ecd_angle);
 	PID_Task(&GM6020_Yaw_SpeedPID,GM6020_Yaw_PositionPID.output*100,YAW_GM6020Encoder.filter_rate);

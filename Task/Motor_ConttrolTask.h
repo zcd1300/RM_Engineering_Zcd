@@ -21,6 +21,6 @@ void Motor_ControlThraedCreate (osPriority taskPriority);
 extern uint8_t GimbalCalibrationLED_DispInitFlag;
 
 extern volatile float YAW_Initial_Angle;
-
+extern volatile float PITCH_Initial_Angle;
 #endif
 
