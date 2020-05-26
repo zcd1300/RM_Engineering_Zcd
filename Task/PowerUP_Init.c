@@ -15,7 +15,10 @@
 
 
 //GimbalOffset_SAVE Gimbal_Init={0,0,0};
-uint8_t GimbalCalibrationState_ReadTemp [8];
+uint8_t GimbalCalibrationState_ReadTemp [5];
+
+
+
 /**
  * @brief  上电后LED操作，主要是用来检查有没有坏掉的LED，以及提示开机
  * @param	void
@@ -56,7 +59,7 @@ void LED_GPIO_Init(void)
  * @brief  这个用来判断云台是否有被设置过初值，免得乱跑；
 		   关于判断条件：1 读取flash里的标志、2 判断YAW和PITCH都为o，
 		   虽然存在初值都是0的可能，但是绝大部分情况下都为0时是没有校准过的。
-		   如果没有校准过，云台会一直执行校准模式！！！
+		   如果没有校准过，云台会直接切换到校准模式！！！
  * @param	void
  * @retval	void
  * @author ZCD
@@ -65,7 +68,21 @@ void LED_GPIO_Init(void)
 
 void GimbalCalibrationState_Judge(void)
 {
+	int16_t YAW_ReadTEMP=0;
+	int16_t PITCH_ReadTEMP=0;
 	Flash_Read(Gimbal_Flash_SaveAddr,2,(uint32_t *)GimbalCalibrationState_ReadTemp);
+	
+	YAW_ReadTEMP = GimbalCalibrationState_ReadTemp[1]<<8|GimbalCalibrationState_ReadTemp[2];
+	PITCH_ReadTEMP = GimbalCalibrationState_ReadTemp[3]<<8|GimbalCalibrationState_ReadTemp[4];
+	
+	if(GimbalCalibrationState_ReadTemp[0]!= 0xaa)
+	{
+		Gimbal_Debug_Flag = 1;
+	}
+	if(YAW_ReadTEMP ==0 && PITCH_ReadTEMP == 0)//yaw和pitch同时为0的概率很小，应该可以作为判断标准
+	{
+		Gimbal_Debug_Flag = 1;	
+	}
 	
 }
 

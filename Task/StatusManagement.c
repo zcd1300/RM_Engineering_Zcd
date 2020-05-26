@@ -21,7 +21,7 @@ Chassis_MoveMode_t Move_Mode;
 
 uint32_t time_tick_1ms=0;
 uint8_t GimbalCalibration_Flag=0;
-uint8_t GimbalCalibrationKEY_JudgeTime =0;
+uint16_t GimbalCalibrationKEY_JudgeTime =0;
 uint8_t Gimbal_Debug_Flag=0;
 
 //函数未完成
@@ -364,12 +364,12 @@ void GimbalCalibrationKEY_Judge(void)
 	{
 		GimbalCalibrationKEY_JudgeTime = 0;
 	}
-	if(GimbalCalibrationKEY_JudgeTime >= 200 && Gimbal_Mode == Gimbal_Stop)//长按2s切换
+	if(GimbalCalibrationKEY_JudgeTime >= 300 && Gimbal_Mode == Gimbal_Stop)//长按3s切换
 	{
 		Gimbal_Mode = Gimbal_Debug;
 		Gimbal_Debug_Flag = 1;
 	}
-	else if(GimbalCalibrationKEY_JudgeTime >= 200 && Gimbal_Mode == Gimbal_Prepare)
+	else if(GimbalCalibrationKEY_JudgeTime >= 300 && Gimbal_Mode == Gimbal_Prepare)
 	{
 		Gimbal_Mode = Gimbal_Debug;
 		Gimbal_Debug_Flag = 1;

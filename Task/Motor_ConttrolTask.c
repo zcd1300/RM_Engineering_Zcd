@@ -16,20 +16,27 @@
 #include "Fuzzy_Controller.h"
 #include "StatusManagement.h"
 #include "Flash_Operation.h"
+#include "PowerUP_Init.h"
 //#include "Friction.h"
 //#include "usart.h"
 //#include "XDU_USB_HID_Z.h"
 
 
 
+int16_t YAW_Read=0;
+int16_t PITCH_Read=0;
 
 uint16_t GMSpeeedTest=200;
 uint8_t YAW_Initial_Angle_FLAG=0;
 uint8_t PITCH_Initial_Angle_FLAG=0;
 
-volatile float YAW_Initial_Angle=-101;	//= 
+//volatile float YAW_Initial_Angle=-101;	//-101
+//volatile float PITCH_Initial_Angle=120;//185
+volatile float YAW_Initial_Angle = YAW_Read;
+volatile float PITCH_Initial_Angle = PITCH_Read;
+
+
 volatile float YAW_Target_Angle=-101;
-volatile float PITCH_Initial_Angle=120;//185
 volatile float PITCH_Target_Angle=120;//185
 
 int16_t Yaw_InitAngle_ABS=-242;				//工程云台Yaw时水平绝对角度-99 - -102之间
