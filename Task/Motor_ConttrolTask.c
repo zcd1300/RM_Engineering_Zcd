@@ -30,10 +30,8 @@ uint16_t GMSpeeedTest=200;
 uint8_t YAW_Initial_Angle_FLAG=0;
 uint8_t PITCH_Initial_Angle_FLAG=0;
 
-//volatile float YAW_Initial_Angle=-101;	//-101
-//volatile float PITCH_Initial_Angle=120;//185
-volatile float YAW_Initial_Angle = YAW_Read;
-volatile float PITCH_Initial_Angle = PITCH_Read;
+volatile float YAW_Initial_Angle=-101;	//-101
+volatile float PITCH_Initial_Angle=120;//185
 
 
 volatile float YAW_Target_Angle=-101;
