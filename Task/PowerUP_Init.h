@@ -21,7 +21,8 @@
 //	
 //}GimbalOffset_SAVE;
 
-
+extern int16_t YAW_ReadTEMP;
+extern int16_t PITCH_ReadTEMP;
 
 void LED_GPIO_Init(void);
 void PowerUP_Init(void);

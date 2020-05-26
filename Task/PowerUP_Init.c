@@ -17,7 +17,8 @@
 //GimbalOffset_SAVE Gimbal_Init={0,0,0};
 uint8_t GimbalCalibrationState_ReadTemp [5];
 
-
+	int16_t YAW_ReadTEMP=0;
+	int16_t PITCH_ReadTEMP=0;
 
 /**
  * @brief  上电后LED操作，主要是用来检查有没有坏掉的LED，以及提示开机
@@ -68,8 +69,7 @@ void LED_GPIO_Init(void)
 
 void GimbalCalibrationState_Judge(void)
 {
-	int16_t YAW_ReadTEMP=0;
-	int16_t PITCH_ReadTEMP=0;
+
 	Flash_Read(Gimbal_Flash_SaveAddr,2,(uint32_t *)GimbalCalibrationState_ReadTemp);
 	
 	YAW_ReadTEMP = GimbalCalibrationState_ReadTemp[1]<<8|GimbalCalibrationState_ReadTemp[2];

@@ -23,9 +23,6 @@
 
 
 
-int16_t YAW_Read=0;
-int16_t PITCH_Read=0;
-
 uint16_t GMSpeeedTest=200;
 uint8_t YAW_Initial_Angle_FLAG=0;
 uint8_t PITCH_Initial_Angle_FLAG=0;
@@ -33,12 +30,12 @@ uint8_t PITCH_Initial_Angle_FLAG=0;
 volatile float YAW_Initial_Angle=-101;	//-101
 volatile float PITCH_Initial_Angle=120;//185
 
-
 volatile float YAW_Target_Angle=-101;
 volatile float PITCH_Target_Angle=120;//185
 
-int16_t Yaw_InitAngle_ABS=-242;				//工程云台Yaw时水平绝对角度-99 - -102之间
-int16_t Pitch_InitAngle_ABS=185;			//工程云台Pitch时水平绝对角度184-196之间
+
+//int16_t Yaw_InitAngle_ABS=-242;				//工程云台Yaw时水平绝对角度-99 - -102之间
+//int16_t Pitch_InitAngle_ABS=185;			//工程云台Pitch时水平绝对角度184-196之间
 
 Ramp_Init_e Yaw_Ramp_Init={-101,20,50,0,0,0};		//这里忘了那边角度是递增，具体使用等看看那边角度再写。
 Ramp_Init_e Pitch_Ramp_Init={-101,20,50,0,0,0};
@@ -63,7 +60,8 @@ Fuzzy Fuzzy_PITCH_Position={0,{0,0,0},0,0,0,0,20,0,0.1,10,0,0.1,5,0,0.1};
  * @Time 2020 1 13
 */
 void GM_prepare(void)
-{
+{	
+	
 	GM6020_Pitch_SpeedPID.outputMax = 6000;
 	//暂时不能测试效果，先放这吧，避免忘了函数调用方法。反正这个函数不会让云台乱动
 	Connect_PID_FUZZY(&Fuzzy_YAW_Position,&GM6020_Yaw_PositionPID,YAW_Target_Angle);//这个还有问题，会导致PID不工作
@@ -215,8 +213,6 @@ void Mouse_GM_Control(void)//尚未测试完善
 uint16_t GimbalCalibrationKEY_ExitTime = 0;
 uint16_t GimbalCalibrationLED_Disp = 0;
 uint8_t GimbalCalibrationLED_DispInitFlag = 0;
-
-// const uint8_t FlashWrite_Buff3[]={"1234567890"};
 
 void GimbalCalibration_Control(void)
 {
