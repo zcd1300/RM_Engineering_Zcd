@@ -47,7 +47,7 @@ typedef enum
 void CM_Get_SpeedRef(void);
 void Key2Speed(int16_t FB, int16_t LR);
 void Chassis_DecodeThreadCreate(osPriority taskPriority);
-
+void ChassisData_Init(void);
 
 
 

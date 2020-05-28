@@ -128,9 +128,9 @@ void OperateMode_Select(void)
 ~~~
 
 ~~~ c
-void StatusMachine_Init(void)
-static void WorkstateInit(void)
-void State_Update(void)
+//void StatusMachine_Init(void)
+//static void WorkstateInit(void)
+//void State_Update(void)
 void OperateMode_Select(void)
 ~~~
 

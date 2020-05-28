@@ -23,7 +23,7 @@ void Key2Speed(int16_t FB, int16_t LR)
 	tmp_FB = FB ;
 	tmp_LR = LR ;
 
-	//这里的高速模式和新版工程的发弹有逻辑冲突
+	//这里的高速模式和新版工程的发弹可能有逻辑冲突
 	if(Remote_CheckJumpKey(KEY_W) == 1&&RC_CtrlData.mouse.press_r == 0 &&RC_CtrlData.mouse.press_l == 0)
 	{
 		ChassisData.ChassisSpeedRef.Y = tmp_FB*FBSpeedRamp.Calc(&FBSpeedRamp);
@@ -137,6 +137,16 @@ void CM_Get_SpeedRef(void)
 		ChassisData.ChassisAngle = 0;
 	
 	}
+}
+
+
+//底盘初始化,速度角度全为0
+void ChassisData_Init(void)
+{
+	ChassisData.ChassisSpeedRef.Y = 0;
+	ChassisData.ChassisSpeedRef.X = 0;
+	ChassisData.ChassisSpeedRef.Omega  = 0;
+	ChassisData.ChassisAngle = 0;
 }
 
 void Chassis_Decode(void const* argument)

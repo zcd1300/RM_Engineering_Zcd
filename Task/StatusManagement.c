@@ -17,20 +17,20 @@ OperateMode_e OperateMode;
 AutoMovement_e AutoMovement;
 Attack_Mode_e Attack_Mode;
 Gimbal_MoveMode_t Gimbal_Mode;
-Chassis_MoveMode_t Move_Mode;
+//Chassis_MoveMode_t Move_Mode;
 
 uint32_t time_tick_1ms=0;
-uint8_t GimbalCalibration_Flag=0;
 uint16_t GimbalCalibrationKEY_JudgeTime =0;
 uint8_t Gimbal_Debug_Flag=0;
 
-//函数未完成
+
 static void WorkstateInit(void)
 {
 	if((LastWorkState!=WorkState)&&(WorkState==PREPARE_STATE))
 	{
-		
-		
+		StatusMachine_Init();//状态机重新初始化
+		ChassisData_Init();//底盘速度初始化
+		time_tick_1ms=0;//这个用来做整车上电的准备时间计时
 	}
 	
 }	
@@ -38,8 +38,10 @@ void SetWorkState(WorkState_e state)
 {	WorkState = state;	}
 WorkState_e GetWorkState(void)
 {	return WorkState;	}
-//--------------------------------------------
-//函数未完成，报错是正常情况
+
+
+
+//整车的状态控制,基本完成.(如果没有需要增加的话)(√)
 void State_Update(void)
 {
 	LastWorkState = WorkState;
@@ -52,26 +54,26 @@ void State_Update(void)
 		return;
 	}
 	//云台、陀螺仪校准
-	else if(GimbalCalibration_Flag)
+	else if(Gimbal_Debug_Flag)
 	{
-		Move_Mode = MoveDebug;
+		//Move_Mode = MoveDebug;//这里先注释掉,用Chassis部分的枚举状态.
+		ChassisMode = Chassis_Locked;
 		Gimbal_Mode = Gimbal_Debug;
-		//具体校准的函数还没写，写完了记得删掉
 		return;
 	}
-//	//其他错误标志
+//	//其他重要错误标志
 //	else if()
 //	{
 //	
 //		return;
 //	}
-	//以上是需要直接转换状态的情况
+//--------------------以上是需要直接转换状态的情况---------------------------//
 	
 	switch(WorkState)
 	{
 		case PREPARE_STATE:
 		{
-			if(time_tick_1ms > PREPARE_TIME_TICK_MS)//这里还有个问题没处理！！
+			if(time_tick_1ms > PREPARE_TIME_TICK_MS)
 			{
 				if(InputMode == REMOTE_INPUT)
 				{
@@ -246,13 +248,18 @@ void AttackMode_Select(void)
 			{	
 				Attack_Mode = Attack_Normal;
 			}
+			else if(Attack_Mode == Attack_Normal)
+			{
+				Attack_Mode = Attack_HalfAuto;
+			}
 			else
 			{
-			
+				Attack_Mode = Attack_Insurance;
 			}
-			//在不同的攻击模式下才进行模式切换
+			//在不同的攻击模式下轮流进行模式切换
+
 		}
-		//这里添加其他按键对应的攻击模式切换
+		//这里添加其他按键对应的攻击模式切换(我打算只用一个Q键解决)
 	
 	}
 
@@ -287,7 +294,7 @@ void GimbalMode_Select(void)
 			default:
 			{
 				Gimbal_Mode = Gimbal_Stop;
-			}
+			}break;
 		
 		}
 	}
@@ -330,11 +337,17 @@ void FrictionMode_Select(void)
 	{
 		case PREPARE_STATE:
 		{
-		
+			friction_wheel_state = FRICTION_WHEEL_OFF;
+			FrictionWheel_Speed = Speed_Low;
+			Shoot_State = NOSHOOTING;
 		}break;
 		case NORMAL_RC_STATE:
 		{
-		
+//			if()
+//			{
+//			
+//			}
+			
 		}break;
 		case KEYBOARD_RC_STATE:
 		{
@@ -342,15 +355,19 @@ void FrictionMode_Select(void)
 		}break;
 		case STOP_STATE:
 		{
-		
+			friction_wheel_state = FRICTION_WHEEL_OFF;
+			FrictionWheel_Speed = Speed_Low;
+			Shoot_State = NOSHOOTING;
 		}break;
 		default:
 		{
-			
-		}
+			friction_wheel_state = FRICTION_WHEEL_OFF;
+			FrictionWheel_Speed = Speed_Low;
+			Shoot_State = NOSHOOTING;			
+		}break;
 	}
 }
-//------------------------------------------拨盘状态先空着吧，这个的状态切换函数可能需要单独写
+//-----------------拨盘状态和摩擦轮状态写在一起了,单独的拨盘控制就不写了-----------------//
 
 
 //-----------------------------------------------------云台校准模式切换
@@ -377,7 +394,7 @@ void GimbalCalibrationKEY_Judge(void)
 
 }
 //------------------------------------------状态机初始化
-void StatusMachine_Init(void)//目前还没被调用，在上电时应该被调用。在切回prepare时也应该调用
+void StatusMachine_Init(void)
 {
 	WorkState = PREPARE_STATE;
 	AutoMovement = Auto_NoMovement;
@@ -394,8 +411,9 @@ void StatusMachine_Update(void)
 	State_Update();			//整车状态切换，受InputMode影响
 	OperateMode_Select();	//操作模式切换，受WorkState和遥控 左侧按键 影响
 	DriverMode_Select();	//运行模式切换，受OperateMode和遥控数据影响
-	ChassisMode_Select();
-	GimbalMode_Select();
+	ChassisMode_Select();	//底盘运动状态控制
+	GimbalMode_Select();	//云台状态控制
+	AttackMode_Select();	//攻击模式选择
 }
 
 void StateMachine(void const* argument)
@@ -409,7 +427,7 @@ void StateMachine(void const* argument)
 
 		GimbalCalibrationKEY_Judge();
 
-		if(time_tick_1ms<2000)
+		if(time_tick_1ms<1500)
 		{
 			time_tick_1ms++;
 		}

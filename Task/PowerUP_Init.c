@@ -102,7 +102,7 @@ void PowerUP_Init(void)
 {
 	LED_GPIO_Init();
 	GimbalCalibrationState_Judge();
-
+	StatusMachine_Init();
 
 }
 
