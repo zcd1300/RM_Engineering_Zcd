@@ -138,7 +138,14 @@ void OperateMode_Select(void)
 
 ## 已知的逻辑冲突、错误
 
+### 		未解决
+
 * 底盘解算时高速模式切换条件和云台发弹**可能**存在冲突
+
+* 模糊PID部分，在误差较小的时候不工作，误差大又会超调
+
+  ### 已解决
+
 * Flash_Operation.c/h 封装的flash操作功能存在Flash使用频繁时，擦除、写入失败的问题；新版BUG修复已经上传至Github。
 
 ## LED标志对照
