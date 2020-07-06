@@ -148,6 +148,8 @@ void OperateMode_Select(void)
 
 * 模糊PID部分，在误差较小的时候不工作，误差大又会超调
 
+* 攻击模式切换，现在的没有键盘的单次按下检测
+
   ### 已解决
 
 * Flash_Operation.c/h 封装的flash操作功能存在Flash使用频繁时，擦除、写入失败的问题；新版BUG修复已经上传至Github。
